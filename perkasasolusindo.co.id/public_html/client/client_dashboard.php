@@ -333,6 +333,11 @@ $initial   = strtoupper(substr($_SESSION['user_firstname'], 0, 1));
 
 $uploadError = $_SESSION['upload_bukti_error'] ?? null;
 unset($_SESSION['upload_bukti_error']);
+
+// Error upload bukti pembayaran khusus hosting (per order_id, karena bisa ada >1 layanan hosting)
+$hostingUploadErrorOid = $_SESSION['upload_bukti_hosting_error_oid'] ?? null;
+$hostingUploadErrorMsg = $_SESSION['upload_bukti_hosting_error'] ?? null;
+unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_error_oid']);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -1295,6 +1300,57 @@ unset($_SESSION['upload_bukti_error']);
             <i class="fa-solid fa-triangle-exclamation"></i>
             <span>Layanan hosting akan <strong>jatuh tempo dalam <?= $sisaHariHost ?> hari</strong> (<?= $expireLabelHost ?>). Segera perpanjang untuk menghindari gangguan.</span>
           </div>
+          <?php endif; ?>
+
+          <?php if ($isPendingPayment): ?>
+            <?php
+              $hostingUploadError = ($hostingUploadErrorOid !== null && (int)$hostingUploadErrorOid === (int)($h['order_id'] ?? 0))
+                  ? $hostingUploadErrorMsg : null;
+            ?>
+            <?php if (($h['payment_status'] ?? '') === 'sudah_bayar'): ?>
+            <!-- Sudah upload, menunggu konfirmasi admin -->
+            <div style="background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.3);border-radius:12px;padding:16px 18px;font-size:.85rem;color:#93c5fd;display:flex;align-items:center;gap:10px;">
+              <i class="fa-solid fa-hourglass-half"></i>
+              <span><strong>Bukti pembayaran berhasil diupload.</strong> Admin sedang memverifikasi pembayaran Anda. Hosting akan diaktifkan setelah dikonfirmasi.</span>
+            </div>
+            <?php else: ?>
+            <!-- Form upload bukti pembayaran hosting -->
+            <div style="background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px;padding:18px 20px;">
+              <div style="font-size:.85rem;font-weight:700;color:var(--text-main);margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+                <i class="fa-solid fa-receipt" style="color:var(--pink-light);"></i> Upload Bukti Pembayaran Hosting
+              </div>
+
+              <?php if (!empty($hostingUploadError)): ?>
+                <p style="font-size:.82rem;color:#f87171;margin-bottom:10px;">
+                  <i class="fa-solid fa-circle-exclamation"></i> <?= htmlspecialchars($hostingUploadError) ?>
+                </p>
+              <?php endif; ?>
+
+              <div class="rekening-box" style="margin-bottom:14px;">
+                <div class="rek-title"><i class="fa-solid fa-building-columns" style="margin-right:6px;"></i>Rekening Pembayaran</div>
+                <div class="rek-row">
+                  <span class="rek-bank">BCA</span>
+                  <span class="rek-norek" id="norekBCAHost<?= (int)$h['id'] ?>">0184246283</span>
+                  <span class="rek-an">a.n. <strong style="color:#c7d2fe;">TECH PERKASA SOLUSINDO</strong></span>
+                  <button class="rek-copy" onclick="copyText('norekBCAHost<?= (int)$h['id'] ?>', this)" title="Salin nomor rekening">
+                    <i class="fa-regular fa-copy"></i> Salin
+                  </button>
+                </div>
+              </div>
+
+              <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:12px;line-height:1.6;">
+                Upload bukti transfer pembayaran hosting Anda (format JPG, JPEG, PNG, atau PDF, maks. 5MB).
+                Admin akan menerima notifikasi dan memverifikasi pembayaran Anda.
+              </p>
+              <form action="/order/upload_bukti_pembayaran.php" method="POST" enctype="multipart/form-data" class="domain-form">
+                <input type="hidden" name="order_id" value="<?= (int)($h['order_id'] ?? 0) ?>">
+                <input type="hidden" name="redirect_view" value="layanan_hosting">
+                <input type="file" name="bukti_pembayaran" accept=".jpg,.jpeg,.png,.pdf" required
+                       style="flex:1;min-width:160px;background:rgba(255,255,255,.07);border:1px solid var(--card-border);border-radius:8px;padding:9px 14px;color:var(--text-main);font-size:.85rem;font-family:inherit;">
+                <button type="submit" class="btn-check"><i class="fa-solid fa-upload"></i> Upload</button>
+              </form>
+            </div>
+            <?php endif; ?>
           <?php endif; ?>
 
           <!-- Baris info utama -->

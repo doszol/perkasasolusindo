@@ -133,15 +133,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
         echo json_encode(['ok'=>true,'new_status'=>$newStatus]); exit;
     }
 
-    // ── Konfirmasi bukti bayar + tandai invoice Paid ──────────
+    // ── Konfirmasi bukti bayar + tandai invoice Paid (jika ada) ──────────
+    // invoice_id boleh 0 untuk order hosting yang belum punya baris di tblinvoices —
+    // order_id dari context halaman ($orderId) sudah cukup untuk konfirmasi.
     if ($_POST['ajax_action'] === 'confirm_payment') {
         $invoiceId = (int)($_POST['invoice_id'] ?? 0);
-        if (!$invoiceId) { echo json_encode(['ok'=>false,'msg'=>'Invoice ID tidak valid.']); exit; }
 
-        // Update invoice → Paid
-        $conn->query("UPDATE tblinvoices SET status='Paid', datepaid=NOW() WHERE id=$invoiceId AND userid=(SELECT userid FROM tblorders WHERE id=$orderId) LIMIT 1");
+        // Validasi: order ini harus memang berstatus 'sudah_bayar' (client sudah upload bukti)
+        $ordChk = $conn->query("SELECT payment_status FROM tblorders WHERE id=$orderId LIMIT 1")->fetch_assoc();
+        if (!$ordChk) { echo json_encode(['ok'=>false,'msg'=>'Order tidak ditemukan.']); exit; }
+        if ($ordChk['payment_status'] === 'lunas') { echo json_encode(['ok'=>false,'msg'=>'Pembayaran order ini sudah dikonfirmasi sebelumnya.']); exit; }
+
+        // Update invoice → Paid (hanya jika ada invoice terkait)
+        if ($invoiceId) {
+            $conn->query("UPDATE tblinvoices SET status='Paid', datepaid=NOW() WHERE id=$invoiceId AND userid=(SELECT userid FROM tblorders WHERE id=$orderId) LIMIT 1");
+        }
         // Update payment_status order → lunas
         $conn->query("UPDATE tblorders SET payment_status='lunas' WHERE id=$orderId LIMIT 1");
+
+        // Log perubahan status pembayaran (audit trail siapa yang konfirmasi)
+        $stmtLogCP = $conn->prepare(
+            "INSERT INTO tblorder_status_logs (order_id,old_status,new_status,changed_by,role,catatan)
+             VALUES (?,?,?,?,?,?)"
+        );
+        $oldStatusCP = $ordChk['payment_status'];
+        $newStatusCP = 'lunas';
+        $roleCP      = 'admin';
+        $catatanCP   = 'Pembayaran dikonfirmasi lunas oleh admin setelah verifikasi bukti transfer.';
+        $stmtLogCP->bind_param('ississ', $orderId, $oldStatusCP, $newStatusCP, $adminId, $roleCP, $catatanCP);
+        $stmtLogCP->execute(); $stmtLogCP->close();
 
         // Notifikasi klien
         $ord2 = $conn->query("SELECT userid, order_number FROM tblorders WHERE id=$orderId")->fetch_assoc();
@@ -273,22 +293,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
     }
 
     // ── Tolak bukti bayar ─────────────────────────────────────
+    // invoice_id boleh 0 (order hosting tanpa invoice) — order_id dari context sudah cukup.
     if ($_POST['ajax_action'] === 'reject_payment') {
         $invoiceId = (int)($_POST['invoice_id'] ?? 0);
         $alasan    = $_POST['alasan'] ?? 'Bukti pembayaran tidak valid.';
-        if ($invoiceId) {
-            $conn->query("UPDATE tblorders SET payment_status='belum_bayar' WHERE id=$orderId LIMIT 1");
-            $ord2 = $conn->query("SELECT userid, order_number FROM tblorders WHERE id=$orderId")->fetch_assoc();
-            if ($ord2) {
-                $cid = (int)$ord2['userid'];
-                $onum = $ord2['order_number'];
-                $j = "Bukti Bayar Ditolak ❌";
-                $p = "Bukti pembayaran untuk order $onum ditolak. Alasan: $alasan. Harap upload ulang.";
-                $t = 'error';
-                $stn = $conn->prepare("INSERT INTO tblnotifikasi (userid,order_id,judul,pesan,tipe) VALUES (?,?,?,?,?)");
-                $stn->bind_param('iisss', $cid, $orderId, $j, $p, $t);
-                $stn->execute(); $stn->close();
-            }
+
+        $conn->query("UPDATE tblorders SET payment_status='belum_bayar', payment_proof=NULL WHERE id=$orderId LIMIT 1");
+
+        // Log perubahan status pembayaran
+        $stmtLogRP = $conn->prepare(
+            "INSERT INTO tblorder_status_logs (order_id,old_status,new_status,changed_by,role,catatan)
+             VALUES (?,?,?,?,?,?)"
+        );
+        $oldStatusRP = 'sudah_bayar';
+        $newStatusRP = 'belum_bayar';
+        $roleRP      = 'admin';
+        $catatanRP   = 'Bukti pembayaran ditolak admin. Alasan: ' . $alasan;
+        $stmtLogRP->bind_param('ississ', $orderId, $oldStatusRP, $newStatusRP, $adminId, $roleRP, $catatanRP);
+        $stmtLogRP->execute(); $stmtLogRP->close();
+
+        $ord2 = $conn->query("SELECT userid, order_number FROM tblorders WHERE id=$orderId")->fetch_assoc();
+        if ($ord2) {
+            $cid = (int)$ord2['userid'];
+            $onum = $ord2['order_number'];
+            $j = "Bukti Bayar Ditolak ❌";
+            $p = "Bukti pembayaran untuk order $onum ditolak. Alasan: $alasan. Harap upload ulang.";
+            $t = 'error';
+            $stn = $conn->prepare("INSERT INTO tblnotifikasi (userid,order_id,judul,pesan,tipe) VALUES (?,?,?,?,?)");
+            $stn->bind_param('iisss', $cid, $orderId, $j, $p, $t);
+            $stn->execute(); $stn->close();
         }
         echo json_encode(['ok'=>true]); exit;
     }
@@ -1013,25 +1046,28 @@ textarea.form-ctrl { resize:vertical; min-height:80px; }
             </div>
             <?php endif; ?>
 
-            <!-- Tombol konfirmasi / tolak -->
-            <?php if($linkedInvoice && $linkedInvoice['status'] !== 'Paid'): ?>
+            <!-- Tombol konfirmasi / tolak — berbasis payment_status order (selalu ada),
+                 bukan invoice (tblinvoices belum tentu ada untuk order hosting baru) -->
+            <?php if($ord['payment_status'] === 'sudah_bayar'): ?>
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <button class="btn btn-primary" onclick="confirmPayment(<?= $linkedInvoice['id'] ?>)">
+              <button class="btn btn-primary" onclick="confirmPayment(<?= $linkedInvoice['id'] ?? 0 ?>)">
                 <i class="fa fa-check-circle"></i> Konfirmasi Pembayaran
               </button>
-              <button class="btn btn-danger" onclick="rejectPayment(<?= $linkedInvoice['id'] ?>)">
+              <button class="btn btn-danger" onclick="rejectPayment(<?= $linkedInvoice['id'] ?? 0 ?>)">
                 <i class="fa fa-xmark-circle"></i> Tolak & Minta Ulang
               </button>
             </div>
-            <?php elseif($linkedInvoice && $linkedInvoice['status'] === 'Paid'): ?>
+            <?php elseif($ord['payment_status'] === 'lunas'): ?>
             <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:8px;">
               <i class="fa fa-circle-check" style="color:#34d399;font-size:18px;"></i>
               <div>
                 <div style="font-size:13px;font-weight:700;">Pembayaran Telah Dikonfirmasi</div>
+                <?php if($linkedInvoice && $linkedInvoice['status'] === 'Paid'): ?>
                 <div style="font-size:12px;color:var(--muted);">
                   Dibayar: <?= $linkedInvoice['datepaid'] ? date('d M Y H:i', strtotime($linkedInvoice['datepaid'])) : '–' ?>
                   · Total: Rp <?= number_format($linkedInvoice['total'],0,',','.') ?>
                 </div>
+                <?php endif; ?>
               </div>
             </div>
             <?php endif; ?>
