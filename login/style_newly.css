@@ -1,0 +1,1115 @@
+/* =====================================================
+   PERKASA SOLUSINDO – Unified Stylesheet
+   Covers: login.php + registrasi.php
+   Theme:  Dark Blue → Magenta Gradient
+   ===================================================== */
+
+/* ── Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Google Font ── */
+/* (imported via <link> in each PHP file) */
+
+/* =====================================================
+   PAGE LOAD OVERLAY + ANIMATIONS
+   ===================================================== */
+
+/* Full-screen loader overlay */
+#page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: linear-gradient(135deg, #0d0d2b 0%, #1a0a3c 60%, #5a0060 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  transition: opacity 0.55s ease, visibility 0.55s ease;
+}
+
+#page-loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Spinning ring */
+.loader-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.08);
+  border-top-color: #ff4dce;
+  border-right-color: #c0007a;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Brand name in loader */
+.loader-brand {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.loader-brand span {
+  color: #ff4dce;
+}
+
+/* Pulsing dots row */
+.loader-dots {
+  display: flex;
+  gap: 7px;
+}
+
+.loader-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c0007a;
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+.loader-dots i:nth-child(2) { animation-delay: 0.2s; }
+.loader-dots i:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.25; transform: scale(0.8); }
+  50%       { opacity: 1;    transform: scale(1.2); }
+}
+
+/* ── Page fade-in after loader ── */
+.page-wrapper {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.55s ease 0.1s, transform 0.55s ease 0.1s;
+}
+
+.page-wrapper.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Staggered card entrance (registrasi) ── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section-card {
+  animation: slideUp 0.45s ease both;
+}
+
+.section-card:nth-child(1) { animation-delay: 0.15s; }
+.section-card:nth-child(2) { animation-delay: 0.25s; }
+.section-card:nth-child(3) { animation-delay: 0.35s; }
+.section-card:nth-child(4) { animation-delay: 0.45s; }
+.section-card:nth-child(5) { animation-delay: 0.55s; }
+
+/* ── Login card entrance ── */
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.96) translateY(16px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+.signin-card {
+  animation: zoomIn 0.5s ease 0.2s both;
+}
+
+/* ── Brand panel entrance ── */
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.brand-inner {
+  animation: slideRight 0.6s ease 0.1s both;
+}
+
+/* =====================================================
+   BASE / BODY
+   ===================================================== */
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  background: #0d0d1a;
+  color: #4a4a4a;
+  min-height: 100vh;
+}
+
+/* =====================================================
+   LEFT BRAND PANEL  (shared by both pages)
+   ===================================================== */
+
+.brand-panel {
+  flex-shrink: 0;
+  background: linear-gradient(160deg, #0d0d2b 0%, #1a0a3c 35%, #5a0060 70%, #c0007a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Login panel — fixed width, centered */
+.signin-panel ~ * .brand-panel,
+.page-wrapper:has(.signin-panel) .brand-panel {
+  width: 420px;
+}
+
+/* Registrasi panel — narrower, sticky */
+.page-wrapper:has(.signup-panel) .brand-panel {
+  width: 320px;
+  align-items: flex-start;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+/* Decorative glows */
+.brand-panel::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  top: -160px;
+  left: -160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(192,0,122,0.18) 0%, transparent 70%);
+}
+
+.brand-panel::after {
+  content: '';
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  bottom: -80px;
+  right: -80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(90,0,96,0.22) 0%, transparent 70%);
+}
+
+.brand-inner {
+  text-align: center;
+  color: #fff;
+  padding: 48px 32px;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.brand-logo i {
+  font-size: 2.4rem;
+  color: #ff4dce;
+}
+
+.brand-logo img {
+  max-width: 60px;
+}
+
+.brand-logo span {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.brand-tagline {
+  font-size: 0.92rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+  max-width: 260px;
+  margin: 0 auto 36px;
+}
+
+.brand-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 36px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transition: background 0.3s;
+}
+
+.dot.active {
+  background: #ff4dce;
+  width: 22px;
+  border-radius: 4px;
+}
+
+/* Step indicator (registrasi only) */
+.brand-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+  padding: 0 8px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 600;
+}
+
+.step span {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.step.active {
+  color: #fff;
+}
+
+.step.active span {
+  background: #c0007a;
+  border-color: #c0007a;
+  box-shadow: 0 0 12px rgba(192,0,122,0.5);
+}
+
+/* =====================================================
+   PAGE LAYOUT
+   ===================================================== */
+
+.page-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* =====================================================
+   LOGIN PAGE  (.signin-panel)
+   ===================================================== */
+
+.signin-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #0d0d2b 0%, #1a0a3c 100%);
+}
+
+.signin-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(192,0,122,0.1);
+  padding: 44px 48px;
+  width: 100%;
+  max-width: 420px;
+  backdrop-filter: blur(12px);
+}
+
+/* Card header */
+.card-header {
+  margin-bottom: 28px;
+}
+
+.card-header h2 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #fff 30%, #ff4dce 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+
+.card-header p {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.45);
+}
+
+/* Social buttons */
+.social-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.btn-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Source Sans Pro', sans-serif;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-social:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.btn-facebook { background: #3b5998; color: #fff; }
+.btn-google   { background: #dd4b39; color: #fff; }
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.divider span {
+  padding: 0 12px;
+  color: rgba(255,255,255,0.3);
+  font-weight: 600;
+}
+
+/* Remember me + forgot */
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  font-size: 0.87rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.5);
+  user-select: none;
+  position: relative;
+}
+
+.remember-me input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.forgot-link {
+  color: #ff4dce;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.forgot-link:hover {
+  color: #ff80df;
+  text-decoration: underline;
+}
+
+/* Sign in button */
+.btn-signin {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #1a0a3c 0%, #5a0060 50%, #c0007a 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.97rem;
+  font-weight: 700;
+  font-family: 'Source Sans Pro', sans-serif;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  transition: opacity 0.25s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(192,0,122,0.4);
+}
+
+.btn-signin:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(192,0,122,0.55);
+}
+
+.btn-signin:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(192,0,122,0.35);
+}
+
+/* Signup link at bottom of login */
+.signup-text {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.87rem;
+  color: rgba(255,255,255,0.35);
+}
+
+.signup-text a {
+  color: #ff4dce;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.signup-text a:hover {
+  text-decoration: underline;
+  color: #ff80df;
+}
+
+/* =====================================================
+   SIGN UP PAGE  (.signup-panel)
+   ===================================================== */
+
+.signup-panel {
+  flex: 1;
+  background: linear-gradient(135deg, #0d0d2b 0%, #1a0a3c 100%);
+  overflow-y: auto;
+  padding: 40px 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.signup-scroll {
+  width: 100%;
+  max-width: 700px;
+}
+
+/* Form header */
+.form-header {
+  margin-bottom: 28px;
+}
+
+.form-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #fff 30%, #ff4dce 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+
+.form-header p {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.4);
+}
+
+.form-header p a {
+  color: #ff4dce;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.form-header p a:hover { text-decoration: underline; }
+
+/* Section cards */
+.section-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ff4dce;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.section-title small {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.3);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+/* Form grids */
+.form-grid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-grid:last-child { margin-bottom: 0; }
+.form-grid.col-1 { grid-template-columns: 1fr; }
+.form-grid.col-2 { grid-template-columns: 1fr 1fr; }
+.form-grid.col-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+/* =====================================================
+   SHARED FORM ELEMENTS  (both pages)
+   ===================================================== */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 0; /* grid handles spacing */
+}
+
+/* Login page form-group still uses margin */
+.signin-card .form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.79rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+/* Input wrapper */
+.input-wrap {
+  position: relative;
+}
+
+.input-wrap > i:first-child,
+.input-wrap > i.fa-envelope,
+.input-wrap > i.fa-lock {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.22);
+  font-size: 0.87rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.input-wrap input,
+.input-wrap select {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  font-size: 0.92rem;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #fff;
+  background: rgba(255,255,255,0.06);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.input-wrap input::placeholder {
+  color: rgba(255,255,255,0.2);
+}
+
+.input-wrap input:focus,
+.input-wrap select:focus {
+  border-color: #c0007a;
+  box-shadow: 0 0 0 3px rgba(192,0,122,0.2);
+  background: rgba(255,255,255,0.09);
+}
+
+/* Select arrow */
+.select-wrap .select-arrow {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.3);
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+.select-wrap select {
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+.input-wrap select option {
+  background: #1a0a3c;
+  color: #fff;
+}
+
+/* Shared checkmark (remember me + TOS) */
+.checkmark {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 3px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.remember-me input:checked ~ .checkmark,
+.tos-input:checked ~ .checkmark {
+  background: #c0007a;
+  border-color: #c0007a;
+}
+
+.remember-me input:checked ~ .checkmark::after,
+.tos-input:checked ~ .checkmark::after {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 7px;
+  border: 2px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg) translateY(-1px);
+}
+
+/* =====================================================
+   SIGN UP – SPECIFIC COMPONENTS
+   ===================================================== */
+
+/* Password tools */
+.password-tools {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.btn-generate {
+  background: rgba(192,0,122,0.15);
+  border: 1px solid rgba(192,0,122,0.4);
+  color: #ff4dce;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: 'Source Sans Pro', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.btn-generate:hover {
+  background: rgba(192,0,122,0.28);
+  transform: translateY(-1px);
+}
+
+.strength-meter {
+  flex: 1;
+  min-width: 160px;
+}
+
+.strength-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 3px;
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+.strength-fill.weak   { background: #e74c3c; }
+.strength-fill.fair   { background: #e67e22; }
+.strength-fill.good   { background: #f1c40f; }
+.strength-fill.strong { background: #2ecc71; }
+
+.strength-label {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.35);
+}
+
+/* Mailing toggle */
+.mailing-text {
+  font-size: 0.87rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.toggle-label input[type="checkbox"] { display: none; }
+
+.toggle-switch {
+  width: 44px;
+  height: 24px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 12px;
+  position: relative;
+  transition: background 0.3s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.toggle-label input:checked ~ .toggle-switch {
+  background: #c0007a;
+  border-color: #c0007a;
+}
+
+.toggle-knob {
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  transition: transform 0.3s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.toggle-label input:checked ~ .toggle-switch .toggle-knob {
+  transform: translateX(20px);
+}
+
+.toggle-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+}
+
+/* TOS + submit footer */
+.section-footer {
+  padding: 8px 0 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.tos-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.55);
+  user-select: none;
+  position: relative;
+}
+
+.tos-input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.tos-check a {
+  color: #ff4dce;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tos-check a:hover { text-decoration: underline; }
+
+/* Register button */
+.btn-register {
+  width: 100%;
+  max-width: 340px;
+  padding: 13px;
+  background: linear-gradient(135deg, #1a0a3c 0%, #5a0060 50%, #c0007a 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: 'Source Sans Pro', sans-serif;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  transition: opacity 0.25s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(192,0,122,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-register:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(192,0,122,0.55);
+}
+
+.btn-register:active { transform: translateY(0); }
+
+.signin-link {
+  font-size: 0.87rem;
+  color: rgba(255,255,255,0.35);
+}
+
+.signin-link a {
+  color: #ff4dce;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signin-link a:hover { text-decoration: underline; }
+
+/* =====================================================
+   AUX CARD  (lupa_password + reset_password)
+   Shared card that reuses .signin-panel for centering
+   ===================================================== */
+
+.aux-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(192,0,122,0.1);
+  padding: 44px 48px;
+  width: 100%;
+  max-width: 460px;
+  backdrop-filter: blur(12px);
+  animation: zoomIn 0.5s ease 0.2s both;
+}
+
+.aux-icon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #1a0a3c, #c0007a);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 22px;
+}
+
+.aux-icon i {
+  font-size: 1.6rem;
+  color: #fff;
+}
+
+.aux-title {
+  font-size: 1.55rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #fff 30%, #ff4dce 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.aux-sub {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.45);
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* Email badge shown in reset_password */
+.email-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: rgba(192,0,122,0.12);
+  border: 1px solid rgba(192,0,122,0.3);
+  color: #ff4dce;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin: 0 auto 24px;
+}
+
+/* ── Alert banners (login / lupa / reset) ── */
+.login-alert {
+  border-radius: 8px;
+  padding: 11px 14px;
+  margin-bottom: 18px;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.login-alert.error {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+}
+
+.login-alert.success {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  color: #15803d;
+}
+
+.login-alert ul {
+  margin: 4px 0 0 16px;
+  padding: 0;
+}
+
+/* ── OTP digit row (reset_password) ── */
+.otp-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.otp-row input {
+  width: 46px;
+  height: 54px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  font-family: 'Source Sans Pro', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.otp-row input:focus {
+  border-color: #c0007a;
+  box-shadow: 0 0 0 3px rgba(192,0,122,0.25);
+}
+
+/* Thin divider inside forms */
+.form-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  margin: 20px 0;
+}
+
+/* ── Eye-toggle button inside input-wrap (all pages) ── */
+.input-wrap .btn-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,0.3);
+  font-size: 0.95rem;
+  padding: 0;
+  line-height: 1;
+}
+
+.input-wrap .btn-eye:hover {
+  color: rgba(255,255,255,0.7);
+}
+
+/* =====================================================
+   SCROLLBAR (signup panel)
+   ===================================================== */
+
+.signup-panel::-webkit-scrollbar { width: 5px; }
+.signup-panel::-webkit-scrollbar-track { background: transparent; }
+.signup-panel::-webkit-scrollbar-thumb {
+  background: rgba(192,0,122,0.35);
+  border-radius: 3px;
+}
+
+/* =====================================================
+   BRAND PANEL — page-specific widths via class
+   ===================================================== */
+
+/* Add .brand-panel--login or .brand-panel--signup in PHP */
+.brand-panel--login {
+  width: 420px;
+  align-items: center;
+}
+
+.brand-panel--signup {
+  width: 320px;
+  align-items: flex-start;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 900px) {
+  .form-grid.col-3 { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .brand-panel { display: none; }
+
+  .signin-panel { padding: 30px 16px; }
+
+  .signin-card {
+    box-shadow: none;
+    padding: 32px 24px;
+  }
+
+  .signup-panel { padding: 24px 16px; }
+
+  .form-grid.col-2,
+  .form-grid.col-3 { grid-template-columns: 1fr; }
+
+  .section-card { padding: 20px 18px; }
+}
