@@ -712,6 +712,19 @@ $statusDefs = [
                 <?php if($ord['payment_status'] === 'sudah_bayar'): ?>
                   <div style="font-size:10px;color:#60a5fa;margin-top:2px;">⚡ Perlu konfirmasi</div>
                 <?php endif; ?>
+                <?php if($ord['payment_status'] !== 'lunas' && !empty($ord['payment_deadline'])):
+                    $dlTs   = strtotime($ord['payment_deadline']);
+                    $sisaMn = (int)floor(($dlTs - time()) / 60);
+                ?>
+                  <div style="font-size:10px;margin-top:3px;font-weight:600;color:<?= $sisaMn <= 0 ? '#f87171' : ($sisaMn <= 120 ? '#fbbf24' : '#7d8590') ?>;">
+                    <i class="fa fa-hourglass-half" style="margin-right:3px;"></i>
+                    <?php if ($sisaMn <= 0): ?>
+                      Lewat batas — akan dihapus cron
+                    <?php else: ?>
+                      Sisa <?= $sisaMn >= 60 ? floor($sisaMn/60).'j '.($sisaMn%60).'m' : $sisaMn.'m' ?>
+                    <?php endif; ?>
+                  </div>
+                <?php endif; ?>
               </td>
 
               <!-- Tgl Order -->

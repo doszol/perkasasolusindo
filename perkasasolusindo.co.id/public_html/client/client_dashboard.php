@@ -95,11 +95,14 @@ if ($view === 'layanan_hosting') {
     $pageTitle = 'Layanan Saya — Hosting';
 
     // Ambil semua layanan hosting milik user beserta detail paket
+    // + payment_status & payment_deadline dari order terkait (untuk countdown bayar)
     $stH = $conn->prepare("
         SELECT h.*, p.name AS package_name, p.description AS package_desc,
-               p.price AS package_price, p.period AS package_period
+               p.price AS package_price, p.period AS package_period,
+               o.id AS order_id, o.order_number, o.payment_status, o.payment_deadline AS order_payment_deadline
         FROM tblhosting h
         LEFT JOIN tblproducts p ON p.id = h.packageid
+        LEFT JOIN tblorders o ON o.userid = h.userid AND o.productid = h.packageid AND o.order_type = 'hosting'
         WHERE h.userid = ?
         ORDER BY h.created_at DESC
     ");
@@ -1166,6 +1169,14 @@ unset($_SESSION['upload_bukti_error']);
             $isWarningHost = $sisaHariHost <= 14 && $sisaHariHost > 0;
             $isExpiredHost = $sisaHariHost <= 0;
         }
+
+        // ── Countdown deadline pembayaran (hanya relevan saat hosting masih Pending & belum lunas) ──
+        $isPendingPayment   = ($h['domainstatus'] === 'Pending') && !empty($h['order_payment_deadline']) && ($h['payment_status'] ?? '') !== 'lunas';
+        $deadlineTs         = $isPendingPayment ? strtotime($h['order_payment_deadline']) : null;
+        $sisaMenitDeadline  = $deadlineTs ? (int)floor(($deadlineTs - time()) / 60) : null;
+        $deadlineLewat      = $sisaMenitDeadline !== null && $sisaMenitDeadline <= 0;
+        $deadlineLabel      = $deadlineTs ? date('d M Y H:i', $deadlineTs) : '-';
+
         // Cek apakah ada invoice unpaid untuk hosting ini
         $hasUnpaidInvoice = false;
         foreach ($invoiceHosting as $inv) {
@@ -1258,7 +1269,23 @@ unset($_SESSION['upload_bukti_error']);
           </div>
           <!-- /Status Bar -->
 
-          <?php if ($isExpiredHost): ?>
+          <?php if ($isPendingPayment): ?>
+            <?php if ($deadlineLewat): ?>
+            <div style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);border-radius:10px;padding:14px 18px;font-size:.85rem;color:#fca5a5;display:flex;align-items:center;gap:10px;">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <span>Batas waktu pembayaran <strong>sudah terlewat</strong>. Order ini akan segera dihapus otomatis oleh sistem. Hubungi admin jika Anda sudah membayar.</span>
+            </div>
+            <?php else: ?>
+            <div style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.35);border-radius:10px;padding:14px 18px;font-size:.85rem;color:#fde68a;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <i class="fa-solid fa-hourglass-half"></i>
+              <span>
+                Segera lakukan pembayaran sebelum <strong><?= $deadlineLabel ?></strong>
+                (<strong><?= $sisaMenitDeadline >= 60 ? floor($sisaMenitDeadline/60) . ' jam ' . ($sisaMenitDeadline % 60) . ' menit' : $sisaMenitDeadline . ' menit' ?> lagi</strong>).
+                Jika melewati batas waktu ini, order akan <strong>dihapus otomatis</strong> dari sistem.
+              </span>
+            </div>
+            <?php endif; ?>
+          <?php elseif ($isExpiredHost): ?>
           <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:14px 18px;font-size:.85rem;color:#fca5a5;display:flex;align-items:center;gap:10px;">
             <i class="fa-solid fa-circle-exclamation"></i>
             <span>Layanan hosting Anda <strong>sudah melewati tanggal jatuh tempo</strong>. Segera lakukan pembayaran perpanjangan untuk menghindari penangguhan.</span>

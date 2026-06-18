@@ -181,12 +181,17 @@ if (!empty($catatan)) $note_full .= " | Catatan: $catatan";
 
 $nextdue = (new DateTime())->modify("+{$periode} month")->format('Y-m-d');
 
+// ── Deadline pembayaran: 24 jam sejak order dibuat ──
+// Jika hingga waktu ini client belum upload bukti & lunas (admin verifikasi),
+// order akan dihapus otomatis oleh cron/cron_hosting_expired.php.
+$payment_deadline = (new DateTime())->modify('+24 hours')->format('Y-m-d H:i:s');
+
 $ord = $conn->prepare("
     INSERT INTO tblorders
-      (order_number, order_type, wifi_status, userid, productid, status, note, created_at, updated_at)
-    VALUES (?, 'hosting', 'pending', ?, ?, 'Active', ?, NOW(), NOW())
+      (order_number, order_type, wifi_status, periode_bulan, payment_deadline, userid, productid, status, note, created_at, updated_at)
+    VALUES (?, 'hosting', 'pending', ?, ?, ?, ?, 'Active', ?, NOW(), NOW())
 ");
-$ord->bind_param('siis', $order_number, $user_id, $paket_id, $note_full);
+$ord->bind_param('sisiis', $order_number, $periode, $payment_deadline, $user_id, $paket_id, $note_full);
 $ord->execute();
 $order_id = $conn->insert_id;
 $ord->close();
@@ -201,12 +206,12 @@ $da_password = da_generate_password(14);
 $hst = $conn->prepare("
     INSERT INTO tblhosting
       (userid, packageid, domain, domain_type, domain_tld, domain_price,
-       domainstatus, nextduedate, da_username, da_password, da_status, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?, ?, ?, 'pending', NOW())
+       domainstatus, nextduedate, payment_deadline, da_username, da_password, da_status, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?, ?, ?, ?, 'pending', NOW())
 ");
-$hst->bind_param('iisssisss',
+$hst->bind_param('iisssissss',
     $user_id, $paket_id, $domain_final, $domain_type, $domain_tld, $domain_price,
-    $nextdue, $da_username, $da_password
+    $nextdue, $payment_deadline, $da_username, $da_password
 );
 $hst->execute();
 $hst->close();

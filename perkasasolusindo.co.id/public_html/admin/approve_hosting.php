@@ -49,6 +49,7 @@ $st = $conn->prepare("
         o.productid,
         o.payment_status,
         o.wifi_status     AS order_status,
+        o.periode_bulan,
         h.id              AS hosting_id,
         h.domain,
         h.domain_type,
@@ -171,28 +172,50 @@ if ($result_db['success']) {
 $da_docroot = '/home/' . $da_username . '/domains/' . $row['domain'] . '/public_html';
 $da_panel   = 'https://' . DA_HOST . ':' . DA_PORT;
 
+// ══════════════════════════════════════════════════════
+//  Hitung tanggal expire (jatuh tempo) hosting
+//  berdasarkan periode_bulan yang dipilih client saat order
+//  (default 1 bulan jika kosong/tidak valid, untuk jaga-jaga
+//  data lama sebelum kolom periode_bulan ditambahkan).
+// ══════════════════════════════════════════════════════
+$periodeBulan = (int)($row['periode_bulan'] ?? 1);
+if ($periodeBulan < 1)  $periodeBulan = 1;
+if ($periodeBulan > 12) $periodeBulan = 12;
+$expireDate = (new DateTime())->modify("+{$periodeBulan} month")->format('Y-m-d');
+
 $conn->begin_transaction();
 try {
     // Simpan semua credential ke tblhosting + set domainstatus → Active
+    // + set nextduedate = expire date sesuai periode order, dan kosongkan payment_deadline
+    //   (sudah lunas, deadline pembayaran 24 jam tidak relevan lagi)
     $upd = $conn->prepare("
         UPDATE tblhosting SET
-            da_status    = 'active',
-            domainstatus = 'Active',
-            da_db_name   = ?,
-            da_db_user   = ?,
-            da_db_pass   = ?,
-            da_db_host   = ?,
-            da_docroot   = ?,
-            updated_at   = NOW()
+            da_status        = 'active',
+            domainstatus     = 'Active',
+            nextduedate      = ?,
+            payment_deadline = NULL,
+            da_db_name       = ?,
+            da_db_user       = ?,
+            da_db_pass       = ?,
+            da_db_host       = ?,
+            da_docroot       = ?,
+            updated_at       = NOW()
         WHERE id = ?
     ");
-    $upd->bind_param('sssssi', $db_name_full, $db_user_full, $db_password, $db_host, $da_docroot, $row['hosting_id']);
+    $upd->bind_param('ssssssi', $expireDate, $db_name_full, $db_user_full, $db_password, $db_host, $da_docroot, $row['hosting_id']);
     $upd->execute();
     $upd->close();
 
-    // Update status order → active
-    $upd2 = $conn->prepare("UPDATE tblorders SET wifi_status='active', updated_at=NOW() WHERE id=?");
-    $upd2->bind_param('i', $order_id);
+    // Update status order → active + set tanggal_expire & kosongkan payment_deadline
+    $upd2 = $conn->prepare("
+        UPDATE tblorders SET
+            wifi_status      = 'active',
+            tanggal_expire   = ?,
+            payment_deadline = NULL,
+            updated_at       = NOW()
+        WHERE id = ?
+    ");
+    $upd2->bind_param('si', $expireDate, $order_id);
     $upd2->execute();
     $upd2->close();
 
@@ -208,8 +231,9 @@ try {
     $stLog->close();
 
     // Notifikasi in-app ke client
+    $expireLabel = date('d M Y', strtotime($expireDate));
     $judul_notif = '✅ Hosting Anda Sudah Aktif!';
-    $pesan_notif = "Akun hosting untuk {$row['domain']} sudah aktif. Credential login dikirim ke email Anda.";
+    $pesan_notif = "Akun hosting untuk {$row['domain']} sudah aktif. Berlaku hingga {$expireLabel}. Credential login dikirim ke email Anda.";
     $stN = $conn->prepare("INSERT INTO tblnotifikasi (userid, order_id, judul, pesan, tipe) VALUES (?, ?, ?, ?, 'sukses')");
     $stN->bind_param('iiss', $row['client_id'], $order_id, $judul_notif, $pesan_notif);
     $stN->execute();
@@ -237,6 +261,7 @@ perkasa_send_mail(
         'order_number' => $row['order_number'],
         'paket_name'   => $row['paket_name'],
         'domain'       => $row['domain'],
+        'expire_date'  => $expireDate,
         'da_panel'     => $da_panel,
         'da_username'  => $da_username,
         'da_password'  => $da_password,

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 18, 2026 at 09:37 AM
+-- Generation Time: Jun 18, 2026 at 12:55 PM
 -- Server version: 10.3.39-MariaDB-cll-lve
 -- PHP Version: 7.3.33
 
@@ -150,18 +150,12 @@ CREATE TABLE `tblhosting` (
   `da_docroot` varchar(255) DEFAULT NULL,
   `domainstatus` varchar(50) NOT NULL DEFAULT 'Active' COMMENT 'Active, Suspended, Cancelled, Terminated, Fraud',
   `nextduedate` date DEFAULT NULL,
+  `payment_deadline` datetime DEFAULT NULL COMMENT 'Sinkron dengan tblorders.payment_deadline pada order hosting terkait',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `payment_verified_at` datetime DEFAULT NULL COMMENT 'Timestamp saat admin konfirmasi pembayaran hosting (sebelum approve)',
   `payment_verified_by` int(11) DEFAULT NULL COMMENT 'FK tblclients.id — admin yang konfirmasi pembayaran hosting'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Layanan hosting aktif per klien';
-
---
--- Dumping data for table `tblhosting`
---
-
-INSERT INTO `tblhosting` (`id`, `userid`, `packageid`, `domain`, `domain_type`, `domain_tld`, `domain_price`, `da_username`, `da_password`, `da_status`, `da_db_name`, `da_db_user`, `da_db_pass`, `da_db_host`, `da_docroot`, `domainstatus`, `nextduedate`, `created_at`, `updated_at`, `payment_verified_at`, `payment_verified_by`) VALUES
-(1, 4, 5, 'dondosol.perkasasolusindo.co.id', 'subdomain', NULL, 0, NULL, NULL, 'pending', NULL, NULL, NULL, 'localhost', NULL, 'Pending', '2026-07-14', '2026-06-14 12:11:39', '2026-06-17 09:17:05', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -228,10 +222,7 @@ INSERT INTO `tblnotifikasi` (`id`, `userid`, `order_id`, `judul`, `pesan`, `tipe
 (24, 4, 1, 'Layanan WiFi Anda Aktif 🚀', 'ID Pelanggan Anda: 5501261417. Layanan internet sudah dapat digunakan. Selamat menikmati!', 'sukses', 1, '2026-06-12 10:25:39'),
 (25, 1, 3, 'Konfirmasi Pembayaran — #ORD-20260610-0003', 'Client Amirul Athena telah mengupload bukti pembayaran untuk order #ORD-20260610-0003. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-12 14:04:36'),
 (26, 3, 3, 'Konfirmasi Pembayaran — #ORD-20260610-0003', 'Client Amirul Athena telah mengupload bukti pembayaran untuk order #ORD-20260610-0003. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-12 14:04:36'),
-(27, 5, 3, 'Layanan WiFi Anda Aktif 🚀', 'ID Pelanggan Anda: 5501261418. Layanan internet sudah dapat digunakan. Selamat menikmati!', 'sukses', 1, '2026-06-12 14:06:18'),
-(28, 4, 4, 'Order Hosting Anda Berhasil Dikirim ☁️', 'Terima kasih! Order hosting paket Hosting Starter (#HST-20260614-3702) berhasil diterima. Domain: dondosol.perkasahosting.co.id. Tim kami akan memproses dalam 24 jam kerja.', 'sukses', 1, '2026-06-14 12:11:39'),
-(29, 1, 4, 'Order Hosting Baru — HST-20260614-3702', 'Order hosting baru dari Don Doszol untuk paket Hosting Starter. Domain: dondosol.perkasahosting.co.id. Periode: 1 bulan.', 'info', 0, '2026-06-14 12:11:39'),
-(30, 3, 4, 'Order Hosting Baru — HST-20260614-3702', 'Order hosting baru dari Don Doszol untuk paket Hosting Starter. Domain: dondosol.perkasahosting.co.id. Periode: 1 bulan.', 'info', 0, '2026-06-14 12:11:39');
+(27, 5, 3, 'Layanan WiFi Anda Aktif 🚀', 'ID Pelanggan Anda: 5501261418. Layanan internet sudah dapat digunakan. Selamat menikmati!', 'sukses', 1, '2026-06-12 14:06:18');
 
 -- --------------------------------------------------------
 
@@ -262,8 +253,10 @@ CREATE TABLE `tblorders` (
   `payment_status` varchar(20) NOT NULL DEFAULT 'belum_bayar' COMMENT 'belum_bayar | sudah_bayar | lunas',
   `payment_proof` varchar(255) DEFAULT NULL COMMENT 'Path file bukti pembayaran yang diupload client',
   `tagihan_bulan` date DEFAULT NULL COMMENT 'Jatuh tempo tagihan bulan ini',
+  `payment_deadline` datetime DEFAULT NULL COMMENT 'Batas waktu upload+konfirmasi pembayaran (created_at + 24 jam). Lewat batas & belum lunas -> dihapus otomatis oleh cron.',
   `userid` int(11) NOT NULL COMMENT 'FK ke tblclients.id',
   `productid` int(11) NOT NULL COMMENT 'FK ke tblproducts.id',
+  `periode_bulan` int(2) DEFAULT NULL COMMENT 'Periode hosting dalam bulan (1-12), dipilih client saat order',
   `status` varchar(30) NOT NULL DEFAULT 'Active' COMMENT 'Active, Suspended, Cancelled, Completed',
   `note` text DEFAULT NULL COMMENT 'Catatan admin tentang pesanan ini',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
@@ -278,10 +271,9 @@ CREATE TABLE `tblorders` (
 -- Dumping data for table `tblorders`
 --
 
-INSERT INTO `tblorders` (`id`, `order_number`, `order_type`, `wifi_status`, `order_status`, `alamat_pasang`, `rt`, `rw`, `kelurahan`, `kecamatan`, `kota`, `provinsi`, `kodepos`, `koordinat_lat`, `koordinat_lng`, `teknisi_id`, `teknisi_id_2`, `jadwal_instalasi`, `tgl_aktif`, `payment_status`, `payment_proof`, `tagihan_bulan`, `userid`, `productid`, `status`, `note`, `created_at`, `updated_at`, `id_pelanggan`, `tanggal_expire`, `installation_paid_until`, `reminder_sent_at`) VALUES
-(1, 'ORD-20260609-0004', 'wifi', 'active', 'pending', 'Perum Permata Candiloka, Blok B14', '04', '04', 'Balonggabus', 'Candi', 'Sidoarjo', 'Jawa Timur', '61271', NULL, NULL, 6, 7, '2026-06-12 11:21:00', '2026-06-12', 'lunas', 'bukti_ORD-20260609-0004_1781225038_77e02e51.png', NULL, 4, 1, 'Active', NULL, '2026-06-09 14:02:37', '2026-06-13 11:23:57', '5501261417', '2026-07-20', '2026-07-20', NULL),
-(3, 'ORD-20260610-0003', 'wifi', 'active', 'pending', 'Perum Permata Candiloka, Blok B14', '04', '04', 'Balonggabus', 'Candi', 'Sidoarjo', 'Jawa Timur', '61271', NULL, NULL, 6, 7, '2026-06-12 15:32:00', '2026-06-12', 'lunas', 'bukti_ORD-20260610-0003_1781247873_bd54c20a.png', NULL, 5, 1, 'Active', 'ok baik, besok meluncur', '2026-06-10 15:13:33', '2026-06-13 11:23:57', '5501261418', '2026-07-20', '2026-07-20', NULL),
-(4, 'HST-20260614-3702', 'hosting', 'pending', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'belum_bayar', NULL, NULL, 4, 5, 'Active', 'CMS: lainnya | Periode: 1 bulan | Diskon: 0% | Total: Rp 100.000 | Catatan: ikut perkasa', '2026-06-14 12:11:39', '2026-06-14 12:11:39', NULL, NULL, NULL, NULL);
+INSERT INTO `tblorders` (`id`, `order_number`, `order_type`, `wifi_status`, `order_status`, `alamat_pasang`, `rt`, `rw`, `kelurahan`, `kecamatan`, `kota`, `provinsi`, `kodepos`, `koordinat_lat`, `koordinat_lng`, `teknisi_id`, `teknisi_id_2`, `jadwal_instalasi`, `tgl_aktif`, `payment_status`, `payment_proof`, `tagihan_bulan`, `payment_deadline`, `userid`, `productid`, `periode_bulan`, `status`, `note`, `created_at`, `updated_at`, `id_pelanggan`, `tanggal_expire`, `installation_paid_until`, `reminder_sent_at`) VALUES
+(1, 'ORD-20260609-0004', 'wifi', 'active', 'pending', 'Perum Permata Candiloka, Blok B14', '04', '04', 'Balonggabus', 'Candi', 'Sidoarjo', 'Jawa Timur', '61271', NULL, NULL, 6, 7, '2026-06-12 11:21:00', '2026-06-12', 'lunas', 'bukti_ORD-20260609-0004_1781225038_77e02e51.png', NULL, NULL, 4, 1, NULL, 'Active', NULL, '2026-06-09 14:02:37', '2026-06-13 11:23:57', '5501261417', '2026-07-20', '2026-07-20', NULL),
+(3, 'ORD-20260610-0003', 'wifi', 'active', 'pending', 'Perum Permata Candiloka, Blok B14', '04', '04', 'Balonggabus', 'Candi', 'Sidoarjo', 'Jawa Timur', '61271', NULL, NULL, 6, 7, '2026-06-12 15:32:00', '2026-06-12', 'lunas', 'bukti_ORD-20260610-0003_1781247873_bd54c20a.png', NULL, NULL, 5, 1, NULL, 'Active', 'ok baik, besok meluncur', '2026-06-10 15:13:33', '2026-06-13 11:23:57', '5501261418', '2026-07-20', '2026-07-20', NULL);
 
 -- --------------------------------------------------------
 
@@ -419,6 +411,22 @@ CREATE TABLE `tblticket_replies` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_cron_logs`
+--
+
+CREATE TABLE `tbl_cron_logs` (
+  `id` int(11) NOT NULL,
+  `cron_name` varchar(100) NOT NULL COMMENT 'Nama cron, misal: cron_hosting_expired',
+  `run_at` datetime NOT NULL DEFAULT current_timestamp() COMMENT 'Waktu eksekusi cron',
+  `total_found` int(11) NOT NULL DEFAULT 0 COMMENT 'Jumlah order yang memenuhi kriteria',
+  `total_deleted` int(11) NOT NULL DEFAULT 0 COMMENT 'Jumlah order yang berhasil dihapus',
+  `total_errors` int(11) NOT NULL DEFAULT 0 COMMENT 'Jumlah order yang gagal diproses',
+  `detail` text DEFAULT NULL COMMENT 'Detail JSON: daftar order_number, client, alasan, dll'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Audit log eksekusi cron job (otomatisasi sistem)';
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_product_logs`
 --
 
@@ -488,7 +496,8 @@ ALTER TABLE `tblhosting`
   ADD KEY `idx_userid` (`userid`),
   ADD KEY `idx_domainstatus` (`domainstatus`),
   ADD KEY `idx_nextduedate` (`nextduedate`),
-  ADD KEY `idx_packageid` (`packageid`);
+  ADD KEY `idx_packageid` (`packageid`),
+  ADD KEY `idx_payment_deadline` (`payment_deadline`);
 
 --
 -- Indexes for table `tblinvoices`
@@ -519,7 +528,8 @@ ALTER TABLE `tblorders`
   ADD KEY `idx_wifi_status` (`wifi_status`),
   ADD KEY `idx_teknisi_id` (`teknisi_id`),
   ADD KEY `idx_order_type` (`order_type`),
-  ADD KEY `idx_wifi_expire` (`wifi_status`,`order_type`,`tanggal_expire`);
+  ADD KEY `idx_wifi_expire` (`wifi_status`,`order_type`,`tanggal_expire`),
+  ADD KEY `idx_payment_deadline` (`payment_deadline`);
 
 --
 -- Indexes for table `tblorder_status_logs`
@@ -566,6 +576,14 @@ ALTER TABLE `tblticket_replies`
   ADD KEY `idx_userid` (`userid`);
 
 --
+-- Indexes for table `tbl_cron_logs`
+--
+ALTER TABLE `tbl_cron_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_cron_name` (`cron_name`),
+  ADD KEY `idx_run_at` (`run_at`);
+
+--
 -- Indexes for table `tbl_product_logs`
 --
 ALTER TABLE `tbl_product_logs`
@@ -606,7 +624,7 @@ ALTER TABLE `tbldomains`
 -- AUTO_INCREMENT for table `tblhosting`
 --
 ALTER TABLE `tblhosting`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tblinvoices`
@@ -618,13 +636,13 @@ ALTER TABLE `tblinvoices`
 -- AUTO_INCREMENT for table `tblnotifikasi`
 --
 ALTER TABLE `tblnotifikasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `tblorders`
 --
 ALTER TABLE `tblorders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tblorder_status_logs`
@@ -654,6 +672,12 @@ ALTER TABLE `tbltickets`
 -- AUTO_INCREMENT for table `tblticket_replies`
 --
 ALTER TABLE `tblticket_replies`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tbl_cron_logs`
+--
+ALTER TABLE `tbl_cron_logs`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --

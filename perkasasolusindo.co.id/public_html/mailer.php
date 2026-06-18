@@ -1690,6 +1690,7 @@ function render_email_hosting_aktif(array $d): string {
     $db_pass = htmlspecialchars($d['db_password'] ?? '');
     $db_host = htmlspecialchars($d['db_host'] ?? 'localhost');
     $db_ok   = $d['db_ok'] ?? false;
+    $expire  = !empty($d['expire_date']) ? date('d M Y', strtotime($d['expire_date'])) : '-';
 
     $db_section = $db_ok ? "
         <tr><td style='padding:8px;border:1px solid #ddd;color:#666'>Database</td>
@@ -1708,6 +1709,11 @@ function render_email_hosting_aktif(array $d): string {
       <h2 style='color:#f97316'>☁️ Hosting Anda Sudah Aktif!</h2>
       <p>Halo <strong>{$name}</strong>,</p>
       <p>Order <strong>#{$order}</strong> paket <strong>{$paket}</strong> sudah aktif. Berikut credential lengkap Anda:</p>
+
+      <div style='background:#fff7ed;border:1px solid #fdba74;border-radius:8px;padding:14px 16px;margin-bottom:20px'>
+        <strong style='color:#c2410c'>📅 Aktif hingga: {$expire}</strong><br>
+        <span style='color:#666;font-size:13px'>Pastikan melakukan perpanjangan sebelum tanggal tersebut agar layanan tidak terputus.</span>
+      </div>
 
       <h3 style='color:#333'>🔐 Akses Panel DirectAdmin</h3>
       <table style='width:100%;border-collapse:collapse;margin-bottom:20px'>
@@ -1835,6 +1841,115 @@ function render_email_suspend_wifi(array $d): string
     <a href="' . DASHBOARD_URL . '"
        style="display:inline-block;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:15px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:8px;letter-spacing:.5px;margin-bottom:12px">
       📊 &nbsp;Login &amp; Upload Bukti Bayar
+    </a>
+    <br>
+    <a href="https://wa.me/6281246684665"
+       style="display:inline-block;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.3);color:#25d366;font-size:13px;font-weight:700;text-decoration:none;padding:10px 24px;border-radius:8px;letter-spacing:.3px">
+      💬 &nbsp;Hubungi Kami via WhatsApp
+    </a>
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="background:#0b0f1a;border-radius:0 0 14px 14px;padding:22px 32px;text-align:center;border-top:1px solid rgba(255,255,255,.06)">
+    <div style="font-size:13px;color:#64748b;line-height:1.9">
+      <strong style="color:#94a3b8">PT. Perkasa Tech Solusindo</strong><br>
+      Jln. KedungRejo, Wedoroklurak, Candi, Sidoarjo, Jawa Timur 61271<br>
+      📞 <a href="tel:+6281246684665" style="color:#ef4444;text-decoration:none">+62 812-4668-4665</a>
+      &nbsp;·&nbsp;
+      ✉️ <a href="mailto:info-perkasa@perkasasolusindo.co.id" style="color:#ef4444;text-decoration:none">info-perkasa@perkasasolusindo.co.id</a>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:#334155">
+      Email ini dikirim otomatis oleh sistem. Mohon tidak membalas email ini.<br>
+      &copy; ' . $year . ' Perkasa Tech Solusindo. All rights reserved.
+    </div>
+  </td></tr>
+
+</table></td></tr></table>
+</body></html>';
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+/**
+ * Render HTML email pemberitahuan ORDER HOSTING DIBATALKAN OTOMATIS
+ * karena melewati batas 24 jam tanpa konfirmasi pembayaran.
+ *
+ * Keys array $d:
+ *   client_name, order_number, paket_name, domain
+ */
+function render_email_hosting_order_cancelled(array $d): string
+{
+    $year = date('Y');
+
+    return '<!DOCTYPE html>
+<html lang="id">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Order Hosting Dibatalkan — Perkasa Solusindo</title></head>
+<body style="margin:0;padding:0;background:#0b0f1a;font-family:Arial,sans-serif;color:#f1f5f9">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0b0f1a;padding:40px 20px">
+<tr><td align="center">
+<table width="100%" style="max-width:580px" cellpadding="0" cellspacing="0">
+
+  <!-- Header -->
+  <tr><td style="background:linear-gradient(135deg,#dc2626,#b91c1c);border-radius:14px 14px 0 0;padding:28px 32px;text-align:center">
+    <div style="font-size:32px;margin-bottom:8px">⛔</div>
+    <div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:.5px">PERKASA <span style="color:#fecaca">SOLUSINDO</span></div>
+    <div style="font-size:12px;color:rgba(255,255,255,.75);margin-top:4px">Pemberitahuan Pembatalan Order</div>
+  </td></tr>
+
+  <!-- Hero -->
+  <tr><td style="background:#111827;padding:32px 32px 24px;text-align:center">
+    <div style="width:72px;height:72px;background:rgba(239,68,68,.12);border:2px solid #ef4444;border-radius:50%;display:inline-block;font-size:32px;line-height:68px;margin-bottom:16px">🗑️</div>
+    <h1 style="font-size:22px;font-weight:900;color:#f87171;margin:0 0 10px">Order Hosting Dibatalkan Otomatis</h1>
+    <p style="font-size:15px;color:#94a3b8;margin:0;line-height:1.7">
+      Yth. <strong style="color:#f1f5f9">' . htmlspecialchars($d['client_name']) . '</strong>,<br>
+      Order hosting Anda telah dibatalkan otomatis oleh sistem karena tidak ada konfirmasi pembayaran
+      dalam waktu <strong style="color:#fca5a5">24 jam</strong> sejak order dibuat.
+    </p>
+  </td></tr>
+
+  <!-- Info detail -->
+  <tr><td style="background:#111827;padding:0 32px 24px">
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr><td style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.25);border-left:4px solid #ef4444;border-radius:0 10px 10px 0;padding:16px 18px;font-size:14px;line-height:1.9;color:#fca5a5">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="color:#94a3b8;font-size:13px;padding:5px 0;width:45%">No. Order</td>
+            <td style="font-weight:700;font-family:\'Courier New\',monospace;color:#f97316;text-align:right">' . htmlspecialchars($d['order_number']) . '</td>
+          </tr>
+          <tr>
+            <td style="color:#94a3b8;font-size:13px;padding:5px 0">Paket Hosting</td>
+            <td style="font-weight:600;color:#f1f5f9;text-align:right">' . htmlspecialchars($d['paket_name']) . '</td>
+          </tr>
+          <tr>
+            <td style="color:#94a3b8;font-size:13px;padding:5px 0">Domain</td>
+            <td style="font-weight:600;color:#f1f5f9;text-align:right">' . htmlspecialchars($d['domain']) . '</td>
+          </tr>
+          <tr>
+            <td style="color:#94a3b8;font-size:13px;padding:5px 0">Status</td>
+            <td style="font-weight:800;color:#ef4444;text-align:right">Dibatalkan &amp; dihapus dari sistem</td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <!-- Info lanjutan -->
+  <tr><td style="background:#111827;padding:0 32px 24px">
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr><td style="background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:16px 18px;font-size:13px;line-height:1.9;color:#e2e8f0">
+        <strong style="display:block;color:#c084fc;margin-bottom:8px;font-size:14px">💡 Masih ingin berlangganan?</strong>
+        Anda dapat melakukan order hosting kembali kapan saja melalui website kami.
+        Pastikan untuk segera mengupload bukti pembayaran setelah order dibuat agar tidak terulang.
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <!-- CTA -->
+  <tr><td style="background:#111827;padding:10px 32px 32px;text-align:center">
+    <a href="' . SITE_URL . '/order/order_hosting.php"
+       style="display:inline-block;background:linear-gradient(135deg,#7c3aed,#c026d3);color:#fff;font-size:15px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:8px;letter-spacing:.5px;margin-bottom:12px">
+      ☁️ &nbsp;Order Hosting Lagi
     </a>
     <br>
     <a href="https://wa.me/6281246684665"
