@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 18, 2026 at 06:25 PM
+-- Generation Time: Jun 19, 2026 at 07:40 AM
 -- Server version: 10.3.39-MariaDB-cll-lve
 -- PHP Version: 7.3.33
 
@@ -624,7 +624,7 @@ ALTER TABLE `tbldomains`
 -- AUTO_INCREMENT for table `tblhosting`
 --
 ALTER TABLE `tblhosting`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tblinvoices`
@@ -636,13 +636,13 @@ ALTER TABLE `tblinvoices`
 -- AUTO_INCREMENT for table `tblnotifikasi`
 --
 ALTER TABLE `tblnotifikasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `tblorders`
 --
 ALTER TABLE `tblorders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tblorder_status_logs`
@@ -678,7 +678,7 @@ ALTER TABLE `tblticket_replies`
 -- AUTO_INCREMENT for table `tbl_cron_logs`
 --
 ALTER TABLE `tbl_cron_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `tbl_product_logs`
