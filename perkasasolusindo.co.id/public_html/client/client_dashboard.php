@@ -204,6 +204,24 @@ if ($view === 'layanan_wifi' || $view === 'detail') {
     }
 }
 
+// ── Halaman Invoice & Tagihan ───────────────────────────────
+$invoiceList = [];
+if ($view === 'invoices') {
+    $pageTitle = 'Invoice & Tagihan';
+    $stInvList = $conn->prepare("
+        SELECT i.*, o.order_number, o.order_type, p.name AS product_name
+        FROM tblinvoices i
+        LEFT JOIN tblorders o   ON o.id = i.order_id
+        LEFT JOIN tblproducts p ON p.id = o.productid
+        WHERE i.userid = ?
+        ORDER BY i.created_at DESC
+    ");
+    $stInvList->bind_param('i', $userId);
+    $stInvList->execute();
+    $invoiceList = $stInvList->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stInvList->close();
+}
+
 // ── Notifikasi client ──────────────────────────────────────
 $stNotif = $conn->prepare(
     "SELECT * FROM tblnotifikasi WHERE userid = ? ORDER BY created_at DESC LIMIT 30"
@@ -392,6 +410,11 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
           <span class="badge-count" style="background:var(--pink);color:#fff;font-size:.65rem;min-width:18px;text-align:center;"><?= $hostingActiveCount ?></span>
         <?php endif; ?>
       </a>
+
+      <div class="nav-section-label">Keuangan</div>
+      <a href="/client/client_dashboard.php?view=invoices" class="nav-item <?= $view === 'invoices' ? 'active' : '' ?>">
+        <i class="fa-solid fa-file-invoice"></i> Invoice &amp; Tagihan
+      </a>
     </nav>
 
     <div class="sidebar-footer">
@@ -413,6 +436,7 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
         <div class="page-title"><?php
           if ($view === 'dashboard') echo 'Dashboard';
           elseif ($view === 'layanan_hosting') echo 'Layanan Hosting';
+          elseif ($view === 'invoices') echo 'Invoice & Tagihan';
           else echo 'Layanan WiFi';
         ?></div>
       </div>
@@ -1465,6 +1489,58 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
     <!-- /LAYANAN HOSTING -->
 
     <?php endif; // view === layanan_hosting ?>
+
+    <?php if ($view === 'invoices'): ?>
+    <!-- ================= INVOICE & TAGIHAN ================= -->
+    <div class="cards-grid">
+
+      <div class="card card-full">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-file-invoice"></i> Riwayat Invoice</h3>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <?php if (empty($invoiceList)): ?>
+            <div class="empty-state">
+              <i class="fa-solid fa-inbox"></i>
+              Belum ada invoice. Invoice akan muncul otomatis setiap kali Anda membuat order baru.
+            </div>
+          <?php else: ?>
+            <?php foreach ($invoiceList as $inv): ?>
+              <?php
+                $jenisLabelMap = ['wifi' => 'WiFi', 'hosting' => 'Hosting'];
+                $jenisLabel    = $jenisLabelMap[$inv['order_type'] ?? ''] ?? 'Layanan';
+              ?>
+              <div class="list-item">
+                <div class="item-info">
+                  <div class="item-title">
+                    Invoice #<?= (int)$inv['id'] ?>
+                    <?php if (!empty($inv['order_number'])): ?>
+                      &middot; <?= htmlspecialchars($inv['order_number']) ?>
+                    <?php endif; ?>
+                  </div>
+                  <div class="item-sub">
+                    <?= $jenisLabel ?><?= !empty($inv['product_name']) ? ' — ' . htmlspecialchars($inv['product_name']) : '' ?>
+                    &middot; Dibuat <?= fmtTanggal($inv['created_at']) ?>
+                    <?php if ($inv['status'] === 'Paid' && !empty($inv['datepaid'])): ?>
+                      &middot; Dibayar <?= fmtTanggal($inv['datepaid'], true) ?>
+                    <?php elseif ($inv['status'] === 'Unpaid' && !empty($inv['duedate'])): ?>
+                      &middot; Jatuh tempo <?= fmtTanggal($inv['duedate'], true) ?>
+                    <?php endif; ?>
+                  </div>
+                </div>
+                <div style="text-align:right;white-space:nowrap;">
+                  <div style="font-size:.92rem;font-weight:700;margin-bottom:4px;"><?= fmtRupiah($inv['total']) ?></div>
+                  <span class="badge <?= invoiceStatusBadgeClass($inv['status']) ?>"><?= invoiceStatusLabel($inv['status']) ?></span>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php endif; ?>
+        </div>
+      </div>
+
+    </div>
+    <!-- /INVOICE & TAGIHAN -->
+    <?php endif; // view === invoices ?>
 
     </div>
 

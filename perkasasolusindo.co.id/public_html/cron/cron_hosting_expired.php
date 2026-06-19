@@ -110,7 +110,12 @@ while ($row = $result->fetch_assoc()) {
             echo "    [DB] tblhosting#$hostingId dihapus.\n";
         }
 
-        // ── 2. Log status sebelum order dihapus (riwayat tetap ada walau order hilang) ──
+        // ── 2. Tandai invoice terkait sebagai Cancelled (bukan dihapus, agar tetap
+        //      jadi jejak audit keuangan meski order induknya sudah tidak ada) ──
+        $conn->query("UPDATE tblinvoices SET status = 'Cancelled' WHERE order_id = {$orderId} AND status != 'Paid'");
+        echo "    [DB] Invoice terkait order#$orderId ditandai Cancelled.\n";
+
+        // ── 3. Log status sebelum order dihapus (riwayat tetap ada walau order hilang) ──
         $catatanLog = "Order hosting dibatalkan & dihapus otomatis oleh sistem karena tidak ada "
                     . "konfirmasi pembayaran dalam 24 jam (deadline: "
                     . date('d M Y H:i', strtotime($row['payment_deadline'])) . ").";
@@ -124,7 +129,7 @@ while ($row = $result->fetch_assoc()) {
         $stLog->close();
         echo "    [DB] Log status perubahan dicatat (system).\n";
 
-        // ── 3. Hapus order ──
+        // ── 4. Hapus order ──
         $conn->query("DELETE FROM tblorders WHERE id = {$orderId} LIMIT 1");
         echo "    [DB] tblorders#$orderId dihapus.\n";
 

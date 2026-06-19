@@ -452,6 +452,19 @@ try {
     $st->execute();
     $st->close();
 
+    // ── Buat invoice (status Unpaid) untuk order ini ──
+    // duedate diset 24 jam dari sekarang (instalasi WiFi mensyaratkan pembayaran awal
+    // sebelum dijadwalkan; admin yang mengonfirmasi lunas secara manual).
+    $invoice_duedate = (new DateTime())->modify('+24 hours')->format('Y-m-d H:i:s');
+    $st = $conn->prepare("
+        INSERT INTO tblinvoices (userid, order_id, status, total, duedate, created_at, updated_at)
+        VALUES (?, ?, 'Unpaid', ?, ?, NOW(), NOW())
+    ");
+    $invoice_total = (float)$paket['price'];
+    $st->bind_param('iids', $client_id, $order_id, $invoice_total, $invoice_duedate);
+    $st->execute();
+    $st->close();
+
     // ── Log status awal ───────────────────────────────────────────
     $catatan_log = $is_logged_in
         ? 'Order baru dibuat oleh client yang sudah terdaftar'

@@ -216,6 +216,16 @@ $hst->bind_param('iisssissss',
 $hst->execute();
 $hst->close();
 
+// ── Buat invoice (status Unpaid) untuk order ini ──
+// duedate invoice disamakan dengan payment_deadline (24 jam dari sekarang).
+$inv = $conn->prepare("
+    INSERT INTO tblinvoices (userid, order_id, status, total, duedate, created_at, updated_at)
+    VALUES (?, ?, 'Unpaid', ?, ?, NOW(), NOW())
+");
+$inv->bind_param('iids', $user_id, $order_id, $total, $payment_deadline);
+$inv->execute();
+$inv->close();
+
 // ── Notifikasi client ──
 $judul_client = "Order Hosting Anda Berhasil Dikirim ☁️";
 $pesan_client = "Terima kasih! Order hosting paket {$produk['name']} (#{$order_number}) berhasil diterima. "

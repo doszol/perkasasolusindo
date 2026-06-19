@@ -133,21 +133,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
         echo json_encode(['ok'=>true,'new_status'=>$newStatus]); exit;
     }
 
-    // ── Konfirmasi bukti bayar + tandai invoice Paid (jika ada) ──────────
-    // invoice_id boleh 0 untuk order hosting yang belum punya baris di tblinvoices —
-    // order_id dari context halaman ($orderId) sudah cukup untuk konfirmasi.
+    // ── Konfirmasi bukti bayar + tandai invoice Paid ──────────
+    // Invoice selalu dicari berdasarkan order_id (akurat & unik per order),
+    // bukan invoice_id dari frontend — supaya tidak salah update invoice order lain.
     if ($_POST['ajax_action'] === 'confirm_payment') {
-        $invoiceId = (int)($_POST['invoice_id'] ?? 0);
-
         // Validasi: order ini harus memang berstatus 'sudah_bayar' (client sudah upload bukti)
         $ordChk = $conn->query("SELECT payment_status FROM tblorders WHERE id=$orderId LIMIT 1")->fetch_assoc();
         if (!$ordChk) { echo json_encode(['ok'=>false,'msg'=>'Order tidak ditemukan.']); exit; }
         if ($ordChk['payment_status'] === 'lunas') { echo json_encode(['ok'=>false,'msg'=>'Pembayaran order ini sudah dikonfirmasi sebelumnya.']); exit; }
 
-        // Update invoice → Paid (hanya jika ada invoice terkait)
-        if ($invoiceId) {
-            $conn->query("UPDATE tblinvoices SET status='Paid', datepaid=NOW() WHERE id=$invoiceId AND userid=(SELECT userid FROM tblorders WHERE id=$orderId) LIMIT 1");
-        }
+        // Update invoice terkait order ini → Paid (jika ada; order lama sebelum fitur invoice mungkin belum punya)
+        $conn->query("UPDATE tblinvoices SET status='Paid', datepaid=NOW() WHERE order_id=$orderId LIMIT 1");
         // Update payment_status order → lunas
         $conn->query("UPDATE tblorders SET payment_status='lunas' WHERE id=$orderId LIMIT 1");
 
