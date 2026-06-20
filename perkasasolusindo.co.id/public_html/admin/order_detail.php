@@ -1027,10 +1027,10 @@ textarea.form-ctrl { resize:vertical; min-height:80px; }
               <?php
               $ext = strtolower(pathinfo($proofPath, PATHINFO_EXTENSION));
               if(in_array($ext,['jpg','jpeg','png','gif','webp'])): ?>
-                <img src="/<?= htmlspecialchars($proofPath) ?>" class="proof-img"
+                <img src="/order/order_asset/bukti_pembayaran/<?= htmlspecialchars($proofPath) ?>" class="proof-img"
                      onclick="window.open(this.src,'_blank')" title="Klik untuk perbesar">
               <?php else: ?>
-                <a href="/<?= htmlspecialchars($proofPath) ?>" target="_blank" class="btn btn-secondary">
+                <a href="/order/order_asset/bukti_pembayaran/<?= htmlspecialchars($proofPath) ?>" target="_blank" class="btn btn-secondary">
                   <i class="fa fa-file-arrow-down"></i> Unduh Bukti Bayar
                 </a>
               <?php endif; ?>
@@ -1372,14 +1372,14 @@ textarea.form-ctrl { resize:vertical; min-height:80px; }
               <div class="proof-box">
                 <?php $extPf = strtolower(pathinfo($proofBulanIni, PATHINFO_EXTENSION)); ?>
                 <?php if(in_array($extPf, ['jpg','jpeg','png','gif','webp'])): ?>
-                  <img src="/<?= htmlspecialchars($proofBulanIni) ?>" class="proof-img"
+                  <img src="/order/order_asset/bukti_pembayaran/<?= htmlspecialchars($proofBulanIni) ?>" class="proof-img"
                        onclick="window.open(this.src,'_blank')" title="Klik untuk perbesar"
                        style="max-height:350px;width:100%;object-fit:contain;border-radius:8px;cursor:zoom-in;">
                   <div style="font-size:11px;color:var(--muted);margin-top:8px;">
                     <i class="fa fa-magnifying-glass-plus"></i> Klik gambar untuk zoom
                   </div>
                 <?php else: ?>
-                  <a href="/<?= htmlspecialchars($proofBulanIni) ?>" target="_blank" class="btn btn-secondary">
+                  <a href="/order/order_asset/bukti_pembayaran/<?= htmlspecialchars($proofBulanIni) ?>" target="_blank" class="btn btn-secondary">
                     <i class="fa fa-file-arrow-down"></i> Unduh Bukti Bayar
                   </a>
                 <?php endif; ?>

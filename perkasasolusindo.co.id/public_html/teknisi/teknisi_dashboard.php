@@ -814,7 +814,7 @@ function namaLengkap($first, $last) { return htmlspecialchars(trim($first . ' ' 
           Bukti pembayaran sudah diupload. Menunggu verifikasi admin.
           <?php if ($detail_order['payment_proof']): ?>
             &nbsp;·&nbsp;
-            <a href="/../order/order_asset/bukti_pembayaran/<?= htmlspecialchars($detail_order['payment_proof']) ?>"
+            <a href="/order/order_asset/bukti_pembayaran/<?= htmlspecialchars($detail_order['payment_proof']) ?>"
                target="_blank" rel="noopener"
                style="color:var(--accent2);font-size:12px;">Lihat Bukti →</a>
           <?php endif; ?>
