@@ -183,9 +183,6 @@ if ($periodeBulan < 1)  $periodeBulan = 1;
 if ($periodeBulan > 12) $periodeBulan = 12;
 $expireDate = (new DateTime())->modify("+{$periodeBulan} month")->format('Y-m-d');
 
-// Nama client (dipakai untuk notifikasi & email di bawah)
-$client_name = trim($row['firstname'] . ' ' . $row['lastname']);
-
 $conn->begin_transaction();
 try {
     // Simpan semua credential ke tblhosting + set domainstatus → Active
@@ -222,17 +219,6 @@ try {
     $upd2->execute();
     $upd2->close();
 
-    // Safety net: pastikan invoice terkait order ini berstatus Paid.
-    // Normalnya sudah diset Paid saat admin klik "Konfirmasi Pembayaran" (order_detail.php),
-    // tapi baris ini menjaga konsistensi jika ada alur lama yang melewati langkah itu.
-    $updInv = $conn->prepare("
-        UPDATE tblinvoices SET status='Paid', datepaid=COALESCE(datepaid, NOW())
-        WHERE order_id = ? AND status != 'Paid'
-    ");
-    $updInv->bind_param('i', $order_id);
-    $updInv->execute();
-    $updInv->close();
-
     // Log
     $catatan_log = implode(' | ', $step_log);
     $stLog = $conn->prepare("
@@ -247,25 +233,11 @@ try {
     // Notifikasi in-app ke client
     $expireLabel = date('d M Y', strtotime($expireDate));
     $judul_notif = '✅ Hosting Anda Sudah Aktif!';
-    $pesan_notif = "Pembayaran Anda telah diterima. Akun hosting untuk {$row['domain']} sudah aktif. Berlaku hingga {$expireLabel}. Credential login dikirim ke email Anda.";
+    $pesan_notif = "Akun hosting untuk {$row['domain']} sudah aktif. Berlaku hingga {$expireLabel}. Credential login dikirim ke email Anda.";
     $stN = $conn->prepare("INSERT INTO tblnotifikasi (userid, order_id, judul, pesan, tipe) VALUES (?, ?, ?, ?, 'sukses')");
     $stN->bind_param('iiss', $row['client_id'], $order_id, $judul_notif, $pesan_notif);
     $stN->execute();
     $stN->close();
-
-    // Notifikasi in-app ke admin/owner lain (selain yang sedang approve) — konfirmasi pembayaran diterima & hosting aktif
-    $judul_notif_admin = "💰 Pembayaran Diterima — Hosting #{$row['order_number']} Aktif";
-    $pesan_notif_admin = "Pembayaran {$client_name} untuk order #{$row['order_number']} ({$row['domain']}) telah dikonfirmasi dan hosting sudah diaktifkan oleh admin.";
-    $stAdminList = $conn->query("SELECT id FROM tblclients WHERE level IN (1,2) AND status = 1 AND id != {$admin_id}");
-    if ($stAdminList) {
-        $stNAdmin = $conn->prepare("INSERT INTO tblnotifikasi (userid, order_id, judul, pesan, tipe) VALUES (?, ?, ?, ?, 'sukses')");
-        while ($admRow = $stAdminList->fetch_assoc()) {
-            $admIdLoop = (int)$admRow['id'];
-            $stNAdmin->bind_param('iiss', $admIdLoop, $order_id, $judul_notif_admin, $pesan_notif_admin);
-            $stNAdmin->execute();
-        }
-        $stNAdmin->close();
-    }
 
     $conn->commit();
 } catch (Exception $e) {
@@ -278,6 +250,8 @@ try {
 // ══════════════════════════════════════════════════════
 //  LANGKAH 4: Kirim email credential ke client
 // ══════════════════════════════════════════════════════
+$client_name = trim($row['firstname'] . ' ' . $row['lastname']);
+
 perkasa_send_mail(
     $row['client_email'],
     $client_name,

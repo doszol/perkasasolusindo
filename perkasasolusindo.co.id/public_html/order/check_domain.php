@@ -30,7 +30,7 @@ if (!isset($_SESSION['domain_check_times'])) {
 // Hapus entry yang lebih dari 60 detik
 $_SESSION['domain_check_times'] = array_filter(
     $_SESSION['domain_check_times'],
-    function($t) use ($now) { return ($now - $t) < 60; }
+    fn($t) => ($now - $t) < 60
 );
 // Batasi: max 20 cek per 60 detik
 if (count($_SESSION['domain_check_times']) >= 20) {

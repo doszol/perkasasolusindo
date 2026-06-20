@@ -126,13 +126,34 @@ if ($view === 'layanan_hosting') {
     $stInv->close();
 }
 
-// Hitung jumlah hosting aktif untuk badge sidebar
-$stHCount = $conn->prepare("SELECT COUNT(*) FROM tblhosting WHERE userid = ? AND domainstatus = 'Active'");
-$stHCount->bind_param('i', $userId);
-$stHCount->execute();
-$stHCount->bind_result($hostingActiveCount);
-$stHCount->fetch();
-$stHCount->close();
+// ── Badge sidebar: Hosting — ! jika ada invoice hosting belum lunas ──
+$hostingActiveCount  = 0;
+$hostingTagihanAlert = false;
+$stHBadge = $conn->prepare("
+    SELECT COUNT(*) FROM tblinvoices inv
+    LEFT JOIN tblorders o ON o.id = inv.order_id
+    WHERE inv.userid = ? AND inv.status != 'Paid' AND o.order_type = 'hosting'
+");
+$stHBadge->bind_param('i', $userId);
+$stHBadge->execute();
+$stHBadge->bind_result($hostingUnpaidCount);
+$stHBadge->fetch();
+$stHBadge->close();
+if ($hostingUnpaidCount > 0) $hostingTagihanAlert = true;
+
+// ── Badge sidebar: WiFi — ! jika cron sudah buat tagihan bulanan unpaid ──
+$wifiTagihanAlert = false;
+$stWBadge = $conn->prepare("
+    SELECT COUNT(*) FROM tblpayment_monthly pm
+    LEFT JOIN tblorders o ON o.id = pm.order_id
+    WHERE o.userid = ? AND pm.status IN ('unpaid', 'waiting_confirm')
+");
+$stWBadge->bind_param('i', $userId);
+$stWBadge->execute();
+$stWBadge->bind_result($wifiUnpaidCount);
+$stWBadge->fetch();
+$stWBadge->close();
+if ($wifiUnpaidCount > 0) $wifiTagihanAlert = true;
 
 if ($view === 'layanan_wifi' || $view === 'detail') {
     $pageTitle = 'Layanan Saya — Layanan WiFi';
@@ -220,6 +241,28 @@ if ($view === 'invoices') {
     $stInvList->execute();
     $invoiceList = $stInvList->get_result()->fetch_all(MYSQLI_ASSOC);
     $stInvList->close();
+}
+
+// ── Halaman Detail Invoice ──────────────────────────────────
+$invoiceDetail     = null;
+$invoiceDetailItems = [];
+if ($view === 'invoice_detail') {
+    $pageTitle  = 'Detail Invoice';
+    $invId      = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+    if ($invId > 0) {
+        $stD = $conn->prepare("
+            SELECT i.*, o.order_number, o.order_type, p.name AS product_name, p.description AS product_desc
+            FROM tblinvoices i
+            LEFT JOIN tblorders o   ON o.id = i.order_id
+            LEFT JOIN tblproducts p ON p.id = o.productid
+            WHERE i.id = ? AND i.userid = ?
+            LIMIT 1
+        ");
+        $stD->bind_param('ii', $invId, $userId);
+        $stD->execute();
+        $invoiceDetail = $stD->get_result()->fetch_assoc();
+        $stD->close();
+    }
 }
 
 // ── Notifikasi client ──────────────────────────────────────
@@ -399,15 +442,15 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
       <a href="/client/client_dashboard.php?view=layanan_wifi"
          class="nav-item <?= ($view === 'layanan_wifi' || $view === 'detail') ? 'active' : '' ?>">
         <i class="fa-solid fa-wifi"></i> Layanan WiFi
-        <?php if ($tagihanAktif && $tagihanAktif['status'] === 'unpaid'): ?>
+        <?php if ($wifiTagihanAlert): ?>
           <span class="badge-count">!</span>
         <?php endif; ?>
       </a>
       <a href="/client/client_dashboard.php?view=layanan_hosting"
          class="nav-item <?= $view === 'layanan_hosting' ? 'active' : '' ?>">
         <i class="fa-solid fa-server"></i> Layanan Hosting
-        <?php if ($hostingActiveCount > 0): ?>
-          <span class="badge-count" style="background:var(--pink);color:#fff;font-size:.65rem;min-width:18px;text-align:center;"><?= $hostingActiveCount ?></span>
+        <?php if ($hostingTagihanAlert): ?>
+          <span class="badge-count">!</span>
         <?php endif; ?>
       </a>
 
@@ -437,7 +480,9 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
           if ($view === 'dashboard') echo 'Dashboard';
           elseif ($view === 'layanan_hosting') echo 'Layanan Hosting';
           elseif ($view === 'invoices') echo 'Invoice & Tagihan';
-          else echo 'Layanan WiFi';
+          elseif ($view === 'invoice_detail') echo 'Detail Invoice';
+          elseif ($view === 'layanan_wifi' || $view === 'detail') echo 'Layanan WiFi';
+          else echo 'Dashboard';
         ?></div>
       </div>
       <div class="topbar-right">
@@ -779,7 +824,7 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
       </div>
       <!-- /Grid 2 kolom -->
 
-      <?php elseif ($view !== 'layanan_hosting'): ?>
+      <?php elseif ($view === 'layanan_wifi' || $view === 'detail'): ?>
       <?php if ($detailOrder): ?>
       <!-- ================= LAYANAN WIFI ================= -->
 
@@ -1038,7 +1083,7 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
               </div>
             <?php else: ?>
               <?php foreach (array_reverse($statusLog) as $log): ?>
-                <div class="list-item">
+                <div class="list-item" style="cursor:pointer;" onclick="window.location='/client/client_dashboard.php?view=invoice_detail&id=<?= (int)$inv['id'] ?>'">
                   <div class="item-info">
                     <div class="item-title"><?= wifiStatusLabel($log['new_status']) ?></div>
                     <?php if (!empty($log['catatan'])): ?>
@@ -1514,7 +1559,7 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
                 $jenisLabelMap = ['wifi' => 'WiFi', 'hosting' => 'Hosting'];
                 $jenisLabel    = $jenisLabelMap[$inv['order_type'] ?? ''] ?? 'Layanan';
               ?>
-              <div class="list-item">
+              <div class="list-item" style="cursor:pointer;" onclick="window.location='/client/client_dashboard.php?view=invoice_detail&id=<?= (int)$inv['id'] ?>'">
                 <div class="item-info">
                   <div class="item-title">
                     Invoice #<?= (int)$inv['id'] ?>
@@ -1545,6 +1590,96 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
     </div>
     <!-- /INVOICE & TAGIHAN -->
     <?php endif; // view === invoices ?>
+
+    <?php if ($view === 'invoice_detail'): ?>
+    <!-- ================= DETAIL INVOICE ================= -->
+    <div class="cards-grid">
+      <div class="card card-full">
+        <div class="card-header" style="justify-content:space-between;">
+          <h3><i class="fa-solid fa-file-invoice"></i> Detail Invoice</h3>
+          <a href="/client/client_dashboard.php?view=invoices"
+             style="font-size:.82rem;color:var(--text-muted);text-decoration:none;">
+            <i class="fa-solid fa-arrow-left"></i> Kembali
+          </a>
+        </div>
+        <div class="card-body" style="padding:24px;">
+          <?php if (!$invoiceDetail): ?>
+            <div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i> Invoice tidak ditemukan.</div>
+          <?php else: ?>
+            <?php
+              $jenisMap = ['wifi'=>'WiFi','hosting'=>'Hosting'];
+              $jenis    = $jenisMap[$invoiceDetail['order_type'] ?? ''] ?? 'Layanan';
+            ?>
+
+            <!-- Header Invoice -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:28px;">
+              <div>
+                <div style="font-size:1.3rem;font-weight:800;color:var(--text-main);">
+                  Invoice #<?= (int)$invoiceDetail['id'] ?>
+                </div>
+                <?php if (!empty($invoiceDetail['order_number'])): ?>
+                  <div style="font-size:.85rem;color:var(--text-muted);margin-top:4px;">
+                    Order: <?= htmlspecialchars($invoiceDetail['order_number']) ?>
+                  </div>
+                <?php endif; ?>
+              </div>
+              <span class="badge <?= invoiceStatusBadgeClass($invoiceDetail['status']) ?>" style="font-size:.85rem;padding:6px 16px;">
+                <?= invoiceStatusLabel($invoiceDetail['status']) ?>
+              </span>
+            </div>
+
+            <!-- Info Grid -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px;">
+              <div style="background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:10px;padding:16px;">
+                <div style="font-size:.72rem;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Jenis Layanan</div>
+                <div style="font-weight:600;"><?= $jenis ?></div>
+              </div>
+              <div style="background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:10px;padding:16px;">
+                <div style="font-size:.72rem;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Produk</div>
+                <div style="font-weight:600;"><?= htmlspecialchars($invoiceDetail['product_name'] ?? '-') ?></div>
+              </div>
+              <div style="background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:10px;padding:16px;">
+                <div style="font-size:.72rem;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Tanggal Dibuat</div>
+                <div style="font-weight:600;"><?= fmtTanggal($invoiceDetail['created_at']) ?></div>
+              </div>
+              <?php if (!empty($invoiceDetail['duedate']) && $invoiceDetail['status'] !== 'Paid'): ?>
+              <div style="background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.25);border-radius:10px;padding:16px;">
+                <div style="font-size:.72rem;text-transform:uppercase;color:#fde68a;margin-bottom:6px;">Jatuh Tempo</div>
+                <div style="font-weight:600;color:#fde68a;"><?= fmtTanggal($invoiceDetail['duedate'], true) ?></div>
+              </div>
+              <?php endif; ?>
+              <?php if ($invoiceDetail['status'] === 'Paid' && !empty($invoiceDetail['datepaid'])): ?>
+              <div style="background:rgba(34,197,94,.07);border:1px solid rgba(74,222,128,.25);border-radius:10px;padding:16px;">
+                <div style="font-size:.72rem;text-transform:uppercase;color:#86efac;margin-bottom:6px;">Tanggal Lunas</div>
+                <div style="font-weight:600;color:#86efac;"><?= fmtTanggal($invoiceDetail['datepaid'], true) ?></div>
+              </div>
+              <?php endif; ?>
+            </div>
+
+            <!-- Total -->
+            <div style="background:linear-gradient(135deg,rgba(192,0,122,.15),rgba(90,0,96,.2));border:1px solid rgba(255,77,206,.2);border-radius:12px;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:.9rem;color:var(--text-muted);">Total Pembayaran</span>
+              <span style="font-size:1.5rem;font-weight:800;color:var(--text-main);"><?= fmtRupiah($invoiceDetail['total']) ?></span>
+            </div>
+
+            <?php if ($invoiceDetail['status'] !== 'Paid'): ?>
+            <!-- Tombol Bayar -->
+            <div style="margin-top:20px;">
+              <a href="/client/client_dashboard.php?view=<?= $invoiceDetail['order_type'] === 'hosting' ? 'layanan_hosting' : 'layanan_wifi' ?>"
+                 style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;
+                        background:linear-gradient(135deg,var(--pink),var(--bg-accent));
+                        color:#fff;font-weight:700;border-radius:10px;text-decoration:none;">
+                <i class="fa-solid fa-credit-card"></i> Bayar Sekarang
+              </a>
+            </div>
+            <?php endif; ?>
+
+          <?php endif; ?>
+        </div>
+      </div>
+    </div>
+    <!-- /DETAIL INVOICE -->
+    <?php endif; // view === invoice_detail ?>
 
     </div>
 

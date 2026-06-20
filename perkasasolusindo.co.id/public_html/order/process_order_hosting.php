@@ -224,7 +224,6 @@ $inv = $conn->prepare("
 ");
 $inv->bind_param('iids', $user_id, $order_id, $total, $payment_deadline);
 $inv->execute();
-$invoice_id = $conn->insert_id;
 $inv->close();
 
 // ── Notifikasi client ──
@@ -269,17 +268,15 @@ if ($client_email) {
         $client_email, $client_name,
         "☁️ Order Hosting #{$order_number} Berhasil Dikirim — Perkasa Solusindo",
         render_email_order_hosting_client([
-            'order_number'     => $order_number,
-            'client_name'      => $client_name,
-            'email'            => $client_email,
-            'paket_name'       => $produk['name'],
-            'domain'           => $domain_final,
-            'domain_type'      => $domain_type,
-            'periode'          => $periode,
-            'total'            => $total,
-            'is_new_user'      => ($mode === 'guest'),
-            'payment_deadline' => $payment_deadline,
-            'invoice_id'       => $invoice_id,
+            'order_number' => $order_number,
+            'client_name'  => $client_name,
+            'email'        => $client_email,
+            'paket_name'   => $produk['name'],
+            'domain'       => $domain_final,
+            'domain_type'  => $domain_type,
+            'periode'      => $periode,
+            'total'        => $total,
+            'is_new_user'  => ($mode === 'guest'),
         ])
     );
 }

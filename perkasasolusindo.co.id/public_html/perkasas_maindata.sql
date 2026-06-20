@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 20, 2026 at 12:27 PM
+-- Generation Time: Jun 20, 2026 at 01:51 PM
 -- Server version: 10.3.39-MariaDB-cll-lve
 -- PHP Version: 7.3.33
 
@@ -283,13 +283,13 @@ INSERT INTO `tblnotifikasi` (`id`, `userid`, `order_id`, `judul`, `pesan`, `tipe
 (25, 1, 3, 'Konfirmasi Pembayaran — #ORD-20260610-0003', 'Client Amirul Athena telah mengupload bukti pembayaran untuk order #ORD-20260610-0003. Silakan periksa dan verifikasi pembayaran.', 'info', 1, '2026-06-12 14:04:36'),
 (26, 3, 3, 'Konfirmasi Pembayaran — #ORD-20260610-0003', 'Client Amirul Athena telah mengupload bukti pembayaran untuk order #ORD-20260610-0003. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-12 14:04:36'),
 (27, 5, 3, 'Layanan WiFi Anda Aktif 🚀', 'ID Pelanggan Anda: 5501261418. Layanan internet sudah dapat digunakan. Selamat menikmati!', 'sukses', 1, '2026-06-12 14:06:18'),
-(37, 4, 7, 'Order Hosting Anda Berhasil Dikirim ☁️', 'Terima kasih! Order hosting paket Hosting Starter (#HST-20260620-9518) berhasil diterima. Domain: fuaddosol.perkasasolusindo.co.id. Tim kami akan memproses dalam 24 jam kerja.', 'sukses', 0, '2026-06-20 11:38:57'),
+(37, 4, 7, 'Order Hosting Anda Berhasil Dikirim ☁️', 'Terima kasih! Order hosting paket Hosting Starter (#HST-20260620-9518) berhasil diterima. Domain: fuaddosol.perkasasolusindo.co.id. Tim kami akan memproses dalam 24 jam kerja.', 'sukses', 1, '2026-06-20 11:38:57'),
 (38, 1, 7, 'Order Hosting Baru — HST-20260620-9518', 'Order hosting baru dari Don Doszol untuk paket Hosting Starter. Domain: fuaddosol.perkasasolusindo.co.id. Periode: 1 bulan.', 'info', 1, '2026-06-20 11:38:57'),
 (39, 3, 7, 'Order Hosting Baru — HST-20260620-9518', 'Order hosting baru dari Don Doszol untuk paket Hosting Starter. Domain: fuaddosol.perkasasolusindo.co.id. Periode: 1 bulan.', 'info', 0, '2026-06-20 11:38:57'),
 (40, 1, 7, 'Konfirmasi Pembayaran — #HST-20260620-9518', 'Client Don Doszol telah mengupload bukti pembayaran hosting untuk order #HST-20260620-9518. Silakan periksa dan verifikasi pembayaran.', 'info', 1, '2026-06-20 12:03:39'),
 (41, 3, 7, 'Konfirmasi Pembayaran — #HST-20260620-9518', 'Client Don Doszol telah mengupload bukti pembayaran hosting untuk order #HST-20260620-9518. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-20 12:03:39'),
-(42, 4, 7, 'Pembayaran Dikonfirmasi ✅', 'Pembayaran untuk order HST-20260620-9518 telah dikonfirmasi. Layanan Anda akan segera diproses.', 'sukses', 0, '2026-06-20 12:14:32'),
-(43, 4, 7, '✅ Hosting Anda Sudah Aktif!', 'Akun hosting untuk fuaddosol.perkasasolusindo.co.id sudah aktif. Berlaku hingga 20 Jul 2026. Credential login dikirim ke email Anda.', 'sukses', 0, '2026-06-20 12:19:32');
+(42, 4, 7, 'Pembayaran Dikonfirmasi ✅', 'Pembayaran untuk order HST-20260620-9518 telah dikonfirmasi. Layanan Anda akan segera diproses.', 'sukses', 1, '2026-06-20 12:14:32'),
+(43, 4, 7, '✅ Hosting Anda Sudah Aktif!', 'Akun hosting untuk fuaddosol.perkasasolusindo.co.id sudah aktif. Berlaku hingga 20 Jul 2026. Credential login dikirim ke email Anda.', 'sukses', 1, '2026-06-20 12:19:32');
 
 -- --------------------------------------------------------
 
@@ -614,7 +614,13 @@ INSERT INTO `tbl_cron_logs` (`id`, `cron_name`, `run_at`, `total_found`, `total_
 (164, 'cron_hosting_expired', '2026-06-20 11:30:01', 0, 0, 0, '[]'),
 (165, 'cron_hosting_expired', '2026-06-20 11:45:02', 0, 0, 0, '[]'),
 (166, 'cron_hosting_expired', '2026-06-20 12:00:01', 0, 0, 0, '[]'),
-(167, 'cron_hosting_expired', '2026-06-20 12:15:01', 0, 0, 0, '[]');
+(167, 'cron_hosting_expired', '2026-06-20 12:15:01', 0, 0, 0, '[]'),
+(168, 'cron_hosting_expired', '2026-06-20 12:30:01', 0, 0, 0, '[]'),
+(169, 'cron_hosting_expired', '2026-06-20 12:45:02', 0, 0, 0, '[]'),
+(170, 'cron_hosting_expired', '2026-06-20 13:00:01', 0, 0, 0, '[]'),
+(171, 'cron_hosting_expired', '2026-06-20 13:15:01', 0, 0, 0, '[]'),
+(172, 'cron_hosting_expired', '2026-06-20 13:30:01', 0, 0, 0, '[]'),
+(173, 'cron_hosting_expired', '2026-06-20 13:45:02', 0, 0, 0, '[]');
 
 -- --------------------------------------------------------
 
@@ -885,7 +891,7 @@ ALTER TABLE `tblticket_replies`
 -- AUTO_INCREMENT for table `tbl_cron_logs`
 --
 ALTER TABLE `tbl_cron_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=168;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=174;
 
 --
 -- AUTO_INCREMENT for table `tbl_product_logs`

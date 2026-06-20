@@ -443,7 +443,6 @@ $statusDefs = [
 
     <div class="nav-label">Manajemen</div>
     <a href="/admin/products.php"  class="nav-item"><i class="fa fa-box-open"></i> Produk Layanan</a>
-    <a href="/admin/domain_pricing.php" class="nav-item"><i class="fa fa-globe"></i> Harga Domain</a>
     <a href="/admin/clients.php"   class="nav-item"><i class="fa fa-users"></i> Data Klien</a>
     <a href="/admin/teknisi.php"   class="nav-item"><i class="fa fa-screwdriver-wrench"></i> Teknisi</a>
     <a href="/admin/hosting.php"   class="nav-item"><i class="fa fa-server"></i> Hosting</a>
