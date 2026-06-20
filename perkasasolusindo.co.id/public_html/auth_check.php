@@ -72,9 +72,17 @@ if (empty($_SESSION['user_id']) && !empty($_COOKIE['perkasa_remember'])) {
 // ── Helpers ──────────────────────────────────────────────────
 
 function dashboardUrl($level) {
-    return ((int)$level === 3)
-        ? '/client/client_dashboard.php'
-        : '/admin/admin_dashboard.php';
+    switch ((int)$level) {
+        case 1: // Owner
+        case 2: // Admin
+            return '/admin/admin_dashboard.php';
+        case 3: // Client
+            return '/client/client_dashboard.php';
+        case 4: // Teknisi
+            return '/teknisi/teknisi_dashboard.php';
+        default:
+            return '/login/login.php';
+    }
 }
 
 /** Redirect to login if not authenticated */
