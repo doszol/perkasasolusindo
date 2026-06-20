@@ -1228,11 +1228,20 @@ function render_email_order_hosting_client(array $d): string
 
     $diskon_txt = $diskon_pct ? " (hemat {$diskon_pct}%)" : '';
 
+    // Deadline bayar
+    $deadline_str = '';
+    if (!empty($d['payment_deadline'])) {
+        $deadline_str = date('d M Y H:i', strtotime($d['payment_deadline'])) . ' WIB';
+    }
+
+    // Invoice ID
+    $invoice_no = !empty($d['invoice_id']) ? '#INV-' . str_pad((int)$d['invoice_id'], 5, '0', STR_PAD_LEFT) : '';
+
     $steps_data = [
         ['☁️', 'Order Diterima',          'Formulir hosting Anda sudah masuk ke sistem kami',                                    true],
-        ['🔍', 'Verifikasi Admin',          'Tim kami menyiapkan server dan memverifikasi data order (maks. 24 jam kerja)',         false],
-        ['💳', 'Konfirmasi Pembayaran',     'Anda akan dihubungi via WhatsApp/email dengan instruksi pembayaran',                  false],
-        ['⚙️', 'Aktivasi cPanel',          'Setelah pembayaran terkonfirmasi, akses cPanel & credential dikirim ke email Anda',   false],
+        ['💳', 'Lakukan Pembayaran',       'Transfer ke rekening BCA 0184246283 a.n. Tech Perkasa Solusindo, lalu upload bukti di dashboard', false],
+        ['🔍', 'Verifikasi Admin',          'Tim kami memverifikasi bukti pembayaran Anda (biasanya dalam 1 jam kerja)',            false],
+        ['⚙️', 'Aktivasi cPanel',          'Akun cPanel & credential dikirim ke email Anda secara otomatis',                      false],
         ['🌐', 'Website Online',            'Upload file Anda dan website siap diakses!',                                          false],
     ];
 
@@ -1291,6 +1300,7 @@ function render_email_order_hosting_client(array $d): string
           <td style="background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);border-radius:10px;padding:16px 20px;text-align:center">
             <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">Nomor Order Anda</div>
             <div style="font-size:22px;font-weight:900;color:#a78bfa;letter-spacing:2px;font-family:\'Courier New\',monospace">' . htmlspecialchars($d['order_number']) . '</div>
+            ' . ($invoice_no ? '<div style="font-size:11px;color:#64748b;margin-top:4px">Invoice: <strong style="color:#94a3b8">' . $invoice_no . '</strong></div>' : '') . '
           </td>
         </tr>
       </table>
@@ -1315,22 +1325,45 @@ function render_email_order_hosting_client(array $d): string
           <td style="color:#f1f5f9;font-weight:600;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);text-align:right">' . (int)$d['periode'] . ' Bulan' . $diskon_txt . '</td>
         </tr>
         <tr>
-          <td style="color:#64748b;padding:9px 0">Total</td>
-          <td style="color:#f97316;font-weight:800;font-size:16px;padding:9px 0;text-align:right">' . $rupiah($d['total']) . '</td>
+          <td style="color:#64748b;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)">Total Tagihan</td>
+          <td style="color:#f97316;font-weight:800;font-size:17px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);text-align:right">' . $rupiah($d['total']) . '</td>
         </tr>
+        ' . ($deadline_str ? '
+        <tr>
+          <td style="color:#64748b;padding:9px 0">⏰ Batas Bayar</td>
+          <td style="color:#f87171;font-weight:700;padding:9px 0;text-align:right">' . $deadline_str . '</td>
+        </tr>' : '') . '
       </table>
     </td>
   </tr>
 
-  <!-- Pesan utama -->
+  <!-- Info Rekening Pembayaran -->
   <tr>
     <td style="background:#111827;padding:20px 32px 0">
       <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
-          <td style="background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.2);border-left:4px solid #7c3aed;border-radius:0 10px 10px 0;padding:16px 18px;font-size:14px;line-height:1.7;color:#e2e8f0">
-            <p style="margin:0 0 8px;font-weight:700;color:#c084fc;font-size:15px">📋 Langkah Selanjutnya</p>
-            <p style="margin:0 0 8px">Tim kami akan <strong>menyiapkan server hosting</strong> Anda dan menghubungi via <strong>WhatsApp atau email</strong> dengan instruksi pembayaran dalam 24 jam kerja.</p>
-            <p style="margin:0;color:#fb923c;font-weight:600">🔔 Pantau <strong>dashboard klien</strong> Anda untuk update status terbaru.</p>
+          <td style="background:rgba(249,115,22,.07);border:1.5px solid rgba(249,115,22,.3);border-radius:12px;padding:18px 20px">
+            <div style="font-size:12px;font-weight:700;color:#f97316;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px">
+              💳 Rekening Pembayaran
+            </div>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="font-size:13px;color:#94a3b8;padding-bottom:4px">Bank</td>
+                <td style="font-size:13px;font-weight:700;color:#f1f5f9;text-align:right">BCA</td>
+              </tr>
+              <tr>
+                <td style="font-size:13px;color:#94a3b8;padding-bottom:4px">Nomor Rekening</td>
+                <td style="font-size:20px;font-weight:900;color:#fbbf24;text-align:right;letter-spacing:2px;font-family:\'Courier New\',monospace">0184246283</td>
+              </tr>
+              <tr>
+                <td style="font-size:13px;color:#94a3b8">Atas Nama</td>
+                <td style="font-size:13px;font-weight:700;color:#f1f5f9;text-align:right">TECH PERKASA SOLUSINDO</td>
+              </tr>
+            </table>
+            <div style="margin-top:12px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:#fca5a5;line-height:1.7">
+              ⚠️ Setelah transfer, <strong>upload bukti pembayaran</strong> di Dashboard → Layanan Hosting.<br>
+              Order yang melewati batas waktu 24 jam akan <strong>dihapus otomatis</strong>.
+            </div>
           </td>
         </tr>
       </table>
@@ -1365,8 +1398,9 @@ function render_email_order_hosting_client(array $d): string
       <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
           <td align="center" style="padding-bottom:10px">
-            <a href="' . $login_url . '" style="display:inline-block;background:linear-gradient(135deg,#7c3aed,#c026d3);color:#fff;font-size:15px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:8px;letter-spacing:.5px">
-              🚀 &nbsp;Login ke Dashboard Klien
+            <a href="' . SITE_URL . '/client/client_dashboard.php?view=layanan_hosting"
+               style="display:inline-block;background:linear-gradient(135deg,#7c3aed,#c026d3);color:#fff;font-size:15px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:8px;letter-spacing:.5px">
+              ☁️ &nbsp;Upload Bukti & Pantau Status
             </a>
           </td>
         </tr>
@@ -1405,6 +1439,7 @@ function render_email_order_hosting_client(array $d): string
 </body>
 </html>';
 }
+
 
 
 // ─────────────────────────────────────────────────────────────────────────────
