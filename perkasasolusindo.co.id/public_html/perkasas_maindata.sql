@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 20, 2026 at 11:30 AM
+-- Generation Time: Jun 20, 2026 at 12:27 PM
 -- Server version: 10.3.39-MariaDB-cll-lve
 -- PHP Version: 7.3.33
 
@@ -201,6 +201,13 @@ CREATE TABLE `tblhosting` (
   `payment_verified_by` int(11) DEFAULT NULL COMMENT 'FK tblclients.id — admin yang konfirmasi pembayaran hosting'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Layanan hosting aktif per klien';
 
+--
+-- Dumping data for table `tblhosting`
+--
+
+INSERT INTO `tblhosting` (`id`, `userid`, `packageid`, `domain`, `domain_type`, `domain_tld`, `domain_price`, `da_username`, `da_password`, `da_status`, `da_db_name`, `da_db_user`, `da_db_pass`, `da_db_host`, `da_docroot`, `domainstatus`, `nextduedate`, `payment_deadline`, `created_at`, `updated_at`, `payment_verified_at`, `payment_verified_by`) VALUES
+(4, 4, 5, 'fuaddosol.perkasasolusindo.co.id', 'subdomain', '', 0, 'on46', 'wr5a297Yw3Kcys', 'active', '', '', '', 'localhost', '/home/on46/domains/fuaddosol.perkasasolusindo.co.id/public_html', 'Active', '2026-07-20', NULL, '2026-06-20 11:38:57', '2026-06-20 12:19:32', NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -225,7 +232,8 @@ CREATE TABLE `tblinvoices` (
 
 INSERT INTO `tblinvoices` (`id`, `userid`, `order_id`, `status`, `total`, `duedate`, `datepaid`, `created_at`, `updated_at`) VALUES
 (1, 4, 1, 'Paid', 185000.00, '2026-06-10', '2026-06-13 11:23:57', '2026-06-09 14:02:37', '2026-06-13 11:23:57'),
-(2, 5, 3, 'Paid', 185000.00, '2026-06-11', '2026-06-13 11:23:57', '2026-06-10 15:13:33', '2026-06-13 11:23:57');
+(2, 5, 3, 'Paid', 185000.00, '2026-06-11', '2026-06-13 11:23:57', '2026-06-10 15:13:33', '2026-06-13 11:23:57'),
+(3, 4, 7, 'Paid', 100000.00, '2026-06-21', '2026-06-20 12:14:32', '2026-06-20 11:38:57', '2026-06-20 12:14:32');
 
 -- --------------------------------------------------------
 
@@ -256,25 +264,32 @@ INSERT INTO `tblnotifikasi` (`id`, `userid`, `order_id`, `judul`, `pesan`, `tipe
 (6, 1, 2, 'Order WiFi Baru — ORD-20260610-0000', 'Order baru dari Amirul Fuad untuk paket Nextstar Home 15 Mbps. Alamat: Perum Permata Candiloka, Blok B14, Balonggabus, Candi, Sidoarjo. Status: Menunggu Verifikasi.', 'info', 1, '2026-06-10 14:47:21'),
 (7, 3, 2, 'Order WiFi Baru — ORD-20260610-0000', 'Order baru dari Amirul Fuad untuk paket Nextstar Home 15 Mbps. Alamat: Perum Permata Candiloka, Blok B14, Balonggabus, Candi, Sidoarjo. Status: Menunggu Verifikasi.', 'info', 0, '2026-06-10 14:47:21'),
 (8, 5, 3, 'Order WiFi Anda Berhasil Dikirim', 'Terima kasih Amirul! Order WiFi paket Nextstar Home 15 Mbps (#ORD-20260610-0003) berhasil diterima. Tim kami akan segera memverifikasi data Anda dan menghubungi untuk jadwal instalasi.', 'sukses', 1, '2026-06-10 15:13:33'),
-(9, 1, 3, 'Order WiFi Baru — ORD-20260610-0003', 'Order baru dari Amirul Athena untuk paket Nextstar Home 15 Mbps. Alamat: Perum Permata Candiloka, Blok B14, Balonggabus, Candi, Sidoarjo. Status: Menunggu Verifikasi.', 'info', 0, '2026-06-10 15:13:33'),
+(9, 1, 3, 'Order WiFi Baru — ORD-20260610-0003', 'Order baru dari Amirul Athena untuk paket Nextstar Home 15 Mbps. Alamat: Perum Permata Candiloka, Blok B14, Balonggabus, Candi, Sidoarjo. Status: Menunggu Verifikasi.', 'info', 1, '2026-06-10 15:13:33'),
 (10, 3, 3, 'Order WiFi Baru — ORD-20260610-0003', 'Order baru dari Amirul Athena untuk paket Nextstar Home 15 Mbps. Alamat: Perum Permata Candiloka, Blok B14, Balonggabus, Candi, Sidoarjo. Status: Menunggu Verifikasi.', 'info', 0, '2026-06-10 15:13:33'),
 (11, 5, 3, 'Pesanan Anda Diverifikasi ✅', 'Admin telah memverifikasi pesanan. Tim akan segera menghubungi Anda.', 'sukses', 1, '2026-06-10 15:17:25'),
 (12, 4, 1, 'Pesanan Anda Diverifikasi ✅', 'Admin telah memverifikasi pesanan. Tim akan segera menghubungi Anda.', 'sukses', 1, '2026-06-11 11:22:14'),
 (13, 4, 1, 'Jadwal Instalasi Ditetapkan 📅', 'Jadwal pemasangan sudah ditetapkan. Cek detail di dashboard.', 'info', 1, '2026-06-11 11:22:26'),
 (14, 4, 1, 'Jadwal Instalasi Ditetapkan 📅', 'Jadwal pemasangan sudah ditetapkan. Cek detail di dashboard.', 'info', 1, '2026-06-11 11:30:40'),
 (15, 5, 3, 'Jadwal Instalasi Ditetapkan 📅', 'Jadwal pemasangan sudah ditetapkan. Cek detail di dashboard.', 'info', 1, '2026-06-11 11:33:44'),
-(16, 1, 1, '✅ Instalasi Selesai — ORD-20260609-0004', 'Teknisi teknisi fuad melaporkan instalasi selesai untuk order ORD-20260609-0004 (Don Doszol, Nextstar Home 15 Mbps, Candi, Sidoarjo). Silakan review dan aktifkan layanan.', 'sukses', 0, '2026-06-11 14:01:55'),
+(16, 1, 1, '✅ Instalasi Selesai — ORD-20260609-0004', 'Teknisi teknisi fuad melaporkan instalasi selesai untuk order ORD-20260609-0004 (Don Doszol, Nextstar Home 15 Mbps, Candi, Sidoarjo). Silakan review dan aktifkan layanan.', 'sukses', 1, '2026-06-11 14:01:55'),
 (17, 3, 1, '✅ Instalasi Selesai — ORD-20260609-0004', 'Teknisi teknisi fuad melaporkan instalasi selesai untuk order ORD-20260609-0004 (Don Doszol, Nextstar Home 15 Mbps, Candi, Sidoarjo). Silakan review dan aktifkan layanan.', 'sukses', 0, '2026-06-11 14:01:55'),
 (18, 4, 1, '📡 WiFi Anda Telah Terpasang! — ORD-20260609-0004', 'Selamat! Instalasi WiFi paket Nextstar Home 15 Mbps di lokasi Anda telah selesai dilakukan. Silakan login ke dashboard dan upload bukti pembayaran untuk mengaktifkan layanan.', 'sukses', 1, '2026-06-11 14:01:55'),
-(19, 1, 1, 'Konfirmasi Pembayaran — #ORD-20260609-0004', 'Client Don Doszol telah mengupload bukti pembayaran untuk order #ORD-20260609-0004. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-12 07:43:58'),
+(19, 1, 1, 'Konfirmasi Pembayaran — #ORD-20260609-0004', 'Client Don Doszol telah mengupload bukti pembayaran untuk order #ORD-20260609-0004. Silakan periksa dan verifikasi pembayaran.', 'info', 1, '2026-06-12 07:43:58'),
 (20, 3, 1, 'Konfirmasi Pembayaran — #ORD-20260609-0004', 'Client Don Doszol telah mengupload bukti pembayaran untuk order #ORD-20260609-0004. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-12 07:43:58'),
-(21, 1, 3, '✅ Instalasi Selesai — ORD-20260610-0003', 'Teknisi dosol mantab melaporkan instalasi selesai untuk order ORD-20260610-0003 (Amirul Athena, Nextstar Home 15 Mbps, Candi, Sidoarjo). Silakan review dan aktifkan layanan.', 'sukses', 0, '2026-06-12 08:14:45'),
+(21, 1, 3, '✅ Instalasi Selesai — ORD-20260610-0003', 'Teknisi dosol mantab melaporkan instalasi selesai untuk order ORD-20260610-0003 (Amirul Athena, Nextstar Home 15 Mbps, Candi, Sidoarjo). Silakan review dan aktifkan layanan.', 'sukses', 1, '2026-06-12 08:14:45'),
 (22, 3, 3, '✅ Instalasi Selesai — ORD-20260610-0003', 'Teknisi dosol mantab melaporkan instalasi selesai untuk order ORD-20260610-0003 (Amirul Athena, Nextstar Home 15 Mbps, Candi, Sidoarjo). Silakan review dan aktifkan layanan.', 'sukses', 0, '2026-06-12 08:14:45'),
 (23, 5, 3, '📡 WiFi Anda Telah Terpasang! — ORD-20260610-0003', 'Selamat! Instalasi WiFi paket Nextstar Home 15 Mbps di lokasi Anda telah selesai dilakukan. Silakan login ke dashboard dan upload bukti pembayaran untuk mengaktifkan layanan.', 'sukses', 1, '2026-06-12 08:14:45'),
 (24, 4, 1, 'Layanan WiFi Anda Aktif 🚀', 'ID Pelanggan Anda: 5501261417. Layanan internet sudah dapat digunakan. Selamat menikmati!', 'sukses', 1, '2026-06-12 10:25:39'),
-(25, 1, 3, 'Konfirmasi Pembayaran — #ORD-20260610-0003', 'Client Amirul Athena telah mengupload bukti pembayaran untuk order #ORD-20260610-0003. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-12 14:04:36'),
+(25, 1, 3, 'Konfirmasi Pembayaran — #ORD-20260610-0003', 'Client Amirul Athena telah mengupload bukti pembayaran untuk order #ORD-20260610-0003. Silakan periksa dan verifikasi pembayaran.', 'info', 1, '2026-06-12 14:04:36'),
 (26, 3, 3, 'Konfirmasi Pembayaran — #ORD-20260610-0003', 'Client Amirul Athena telah mengupload bukti pembayaran untuk order #ORD-20260610-0003. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-12 14:04:36'),
-(27, 5, 3, 'Layanan WiFi Anda Aktif 🚀', 'ID Pelanggan Anda: 5501261418. Layanan internet sudah dapat digunakan. Selamat menikmati!', 'sukses', 1, '2026-06-12 14:06:18');
+(27, 5, 3, 'Layanan WiFi Anda Aktif 🚀', 'ID Pelanggan Anda: 5501261418. Layanan internet sudah dapat digunakan. Selamat menikmati!', 'sukses', 1, '2026-06-12 14:06:18'),
+(37, 4, 7, 'Order Hosting Anda Berhasil Dikirim ☁️', 'Terima kasih! Order hosting paket Hosting Starter (#HST-20260620-9518) berhasil diterima. Domain: fuaddosol.perkasasolusindo.co.id. Tim kami akan memproses dalam 24 jam kerja.', 'sukses', 0, '2026-06-20 11:38:57'),
+(38, 1, 7, 'Order Hosting Baru — HST-20260620-9518', 'Order hosting baru dari Don Doszol untuk paket Hosting Starter. Domain: fuaddosol.perkasasolusindo.co.id. Periode: 1 bulan.', 'info', 1, '2026-06-20 11:38:57'),
+(39, 3, 7, 'Order Hosting Baru — HST-20260620-9518', 'Order hosting baru dari Don Doszol untuk paket Hosting Starter. Domain: fuaddosol.perkasasolusindo.co.id. Periode: 1 bulan.', 'info', 0, '2026-06-20 11:38:57'),
+(40, 1, 7, 'Konfirmasi Pembayaran — #HST-20260620-9518', 'Client Don Doszol telah mengupload bukti pembayaran hosting untuk order #HST-20260620-9518. Silakan periksa dan verifikasi pembayaran.', 'info', 1, '2026-06-20 12:03:39'),
+(41, 3, 7, 'Konfirmasi Pembayaran — #HST-20260620-9518', 'Client Don Doszol telah mengupload bukti pembayaran hosting untuk order #HST-20260620-9518. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-20 12:03:39'),
+(42, 4, 7, 'Pembayaran Dikonfirmasi ✅', 'Pembayaran untuk order HST-20260620-9518 telah dikonfirmasi. Layanan Anda akan segera diproses.', 'sukses', 0, '2026-06-20 12:14:32'),
+(43, 4, 7, '✅ Hosting Anda Sudah Aktif!', 'Akun hosting untuk fuaddosol.perkasasolusindo.co.id sudah aktif. Berlaku hingga 20 Jul 2026. Credential login dikirim ke email Anda.', 'sukses', 0, '2026-06-20 12:19:32');
 
 -- --------------------------------------------------------
 
@@ -325,7 +340,8 @@ CREATE TABLE `tblorders` (
 
 INSERT INTO `tblorders` (`id`, `order_number`, `order_type`, `wifi_status`, `order_status`, `alamat_pasang`, `rt`, `rw`, `kelurahan`, `kecamatan`, `kota`, `provinsi`, `kodepos`, `koordinat_lat`, `koordinat_lng`, `teknisi_id`, `teknisi_id_2`, `jadwal_instalasi`, `tgl_aktif`, `payment_status`, `payment_proof`, `tagihan_bulan`, `payment_deadline`, `userid`, `productid`, `periode_bulan`, `status`, `note`, `created_at`, `updated_at`, `id_pelanggan`, `tanggal_expire`, `installation_paid_until`, `reminder_sent_at`) VALUES
 (1, 'ORD-20260609-0004', 'wifi', 'active', 'pending', 'Perum Permata Candiloka, Blok B14', '04', '04', 'Balonggabus', 'Candi', 'Sidoarjo', 'Jawa Timur', '61271', NULL, NULL, 6, 7, '2026-06-12 11:21:00', '2026-06-12', 'lunas', 'bukti_ORD-20260609-0004_1781225038_77e02e51.png', NULL, NULL, 4, 1, NULL, 'Active', NULL, '2026-06-09 14:02:37', '2026-06-13 11:23:57', '5501261417', '2026-07-20', '2026-07-20', NULL),
-(3, 'ORD-20260610-0003', 'wifi', 'active', 'pending', 'Perum Permata Candiloka, Blok B14', '04', '04', 'Balonggabus', 'Candi', 'Sidoarjo', 'Jawa Timur', '61271', NULL, NULL, 6, 7, '2026-06-12 15:32:00', '2026-06-12', 'lunas', 'bukti_ORD-20260610-0003_1781247873_bd54c20a.png', NULL, NULL, 5, 1, NULL, 'Active', 'ok baik, besok meluncur', '2026-06-10 15:13:33', '2026-06-13 11:23:57', '5501261418', '2026-07-20', '2026-07-20', NULL);
+(3, 'ORD-20260610-0003', 'wifi', 'active', 'pending', 'Perum Permata Candiloka, Blok B14', '04', '04', 'Balonggabus', 'Candi', 'Sidoarjo', 'Jawa Timur', '61271', NULL, NULL, 6, 7, '2026-06-12 15:32:00', '2026-06-12', 'lunas', 'bukti_ORD-20260610-0003_1781247873_bd54c20a.png', NULL, NULL, 5, 1, NULL, 'Active', 'ok baik, besok meluncur', '2026-06-10 15:13:33', '2026-06-13 11:23:57', '5501261418', '2026-07-20', '2026-07-20', NULL),
+(7, 'HST-20260620-9518', 'hosting', 'active', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'lunas', 'bukti_HST-20260620-9518_1781931817_297ed26e.png', NULL, NULL, 4, 5, 1, 'Active', 'Domain Gratis: fuaddosol.perkasasolusindo.co.id | Periode: 1 bulan | Diskon: 0% | Total: Rp 100.000', '2026-06-20 11:38:57', '2026-06-20 12:19:32', NULL, '2026-07-20', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -363,7 +379,10 @@ INSERT INTO `tblorder_status_logs` (`id`, `order_id`, `old_status`, `new_status`
 (13, 3, 'scheduled', 'installed', 6, 'teknisi', 'Instalasi selesai dilaporkan oleh teknisi.', '2026-06-12 08:14:45'),
 (14, 1, 'installed', 'active', 1, 'admin', 'ID Pelanggan: 5501261417. Layanan WiFi diaktifkan.', '2026-06-12 10:25:39'),
 (15, 3, 'belum_bayar', 'sudah_bayar', 5, 'client', 'Client mengupload bukti pembayaran.', '2026-06-12 14:04:36'),
-(16, 3, 'installed', 'active', 1, 'admin', 'ID Pelanggan: 5501261418. Layanan WiFi diaktifkan.', '2026-06-12 14:06:18');
+(16, 3, 'installed', 'active', 1, 'admin', 'ID Pelanggan: 5501261418. Layanan WiFi diaktifkan.', '2026-06-12 14:06:18'),
+(17, 7, 'belum_bayar', 'sudah_bayar', 4, 'client', 'Client mengupload bukti pembayaran.', '2026-06-20 12:03:39'),
+(18, 7, 'sudah_bayar', 'lunas', 1, 'admin', 'Pembayaran dikonfirmasi lunas oleh admin setelah verifikasi bukti transfer.', '2026-06-20 12:14:32'),
+(19, 7, 'pending', 'active', 1, 'admin', '✅ Akun DA dibuat: on46 | 📁 Doc root: /home/on46/domains/fuaddosol.perkasasolusindo.co.id/public_html/ | ⚠️ Database gagal: Gagal buat database: Invalid Username', '2026-06-20 12:19:32');
 
 -- --------------------------------------------------------
 
@@ -592,7 +611,10 @@ INSERT INTO `tbl_cron_logs` (`id`, `cron_name`, `run_at`, `total_found`, `total_
 (161, 'cron_hosting_expired', '2026-06-20 10:45:01', 0, 0, 0, '[]'),
 (162, 'cron_hosting_expired', '2026-06-20 11:00:01', 0, 0, 0, '[]'),
 (163, 'cron_hosting_expired', '2026-06-20 11:15:01', 0, 0, 0, '[]'),
-(164, 'cron_hosting_expired', '2026-06-20 11:30:01', 0, 0, 0, '[]');
+(164, 'cron_hosting_expired', '2026-06-20 11:30:01', 0, 0, 0, '[]'),
+(165, 'cron_hosting_expired', '2026-06-20 11:45:02', 0, 0, 0, '[]'),
+(166, 'cron_hosting_expired', '2026-06-20 12:00:01', 0, 0, 0, '[]'),
+(167, 'cron_hosting_expired', '2026-06-20 12:15:01', 0, 0, 0, '[]');
 
 -- --------------------------------------------------------
 
@@ -803,37 +825,37 @@ ALTER TABLE `tbldomains`
 -- AUTO_INCREMENT for table `tbldomain_pricing`
 --
 ALTER TABLE `tbldomain_pricing`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `tblhosting`
 --
 ALTER TABLE `tblhosting`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tblinvoices`
 --
 ALTER TABLE `tblinvoices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tblnotifikasi`
 --
 ALTER TABLE `tblnotifikasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `tblorders`
 --
 ALTER TABLE `tblorders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tblorder_status_logs`
 --
 ALTER TABLE `tblorder_status_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `tblpayment_monthly`
@@ -863,7 +885,7 @@ ALTER TABLE `tblticket_replies`
 -- AUTO_INCREMENT for table `tbl_cron_logs`
 --
 ALTER TABLE `tbl_cron_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=168;
 
 --
 -- AUTO_INCREMENT for table `tbl_product_logs`
