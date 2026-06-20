@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 19, 2026 at 07:40 AM
+-- Generation Time: Jun 20, 2026 at 11:30 AM
 -- Server version: 10.3.39-MariaDB-cll-lve
 -- PHP Version: 7.3.33
 
@@ -129,6 +129,50 @@ CREATE TABLE `tbldomains` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbldomain_pricing`
+--
+
+CREATE TABLE `tbldomain_pricing` (
+  `id` int(11) NOT NULL,
+  `tld` varchar(20) NOT NULL COMMENT 'Ekstensi domain, contoh: .com, .co.id (selalu diawali titik)',
+  `harga_jual` decimal(12,2) NOT NULL DEFAULT 0.00 COMMENT 'Harga jual ke client (registrasi & perpanjangan per tahun)',
+  `harga_modal` decimal(12,2) DEFAULT NULL COMMENT 'Cache harga modal terakhir dari API RNA (diisi otomatis saat admin refresh)',
+  `modal_updated_at` datetime DEFAULT NULL COMMENT 'Kapan harga_modal terakhir disinkronkan dari RNA',
+  `aktif` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1=ditampilkan ke client saat order, 0=disembunyikan',
+  `urutan` int(11) NOT NULL DEFAULT 0 COMMENT 'Urutan tampil di dropdown TLD, makin kecil makin atas',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Harga jual domain ke client, terpisah dari harga modal RNA (rdash.id)';
+
+--
+-- Dumping data for table `tbldomain_pricing`
+--
+
+INSERT INTO `tbldomain_pricing` (`id`, `tld`, `harga_jual`, `harga_modal`, `modal_updated_at`, `aktif`, `urutan`, `created_at`, `updated_at`) VALUES
+(1, '.id', 345900.00, NULL, NULL, 1, 10, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(2, '.co.id', 398990.00, NULL, NULL, 1, 20, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(3, '.web.id', 68390.00, NULL, NULL, 1, 30, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(4, '.or.id', 68390.00, NULL, NULL, 1, 40, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(5, '.ac.id', 68390.00, NULL, NULL, 1, 50, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(6, '.sch.id', 68390.00, NULL, NULL, 1, 60, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(7, '.biz.id', 65190.00, NULL, NULL, 1, 70, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(8, '.my.id', 27990.00, NULL, NULL, 1, 80, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(9, '.com', 210000.00, NULL, NULL, 1, 90, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(10, '.net', 232900.00, NULL, NULL, 1, 100, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(11, '.org', 203590.00, NULL, NULL, 1, 110, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(12, '.xyz', 37090.00, NULL, NULL, 1, 120, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(13, '.asia', 229090.00, NULL, NULL, 1, 130, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(14, '.info', 372490.00, NULL, NULL, 1, 140, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(15, '.co', 558790.00, NULL, NULL, 1, 150, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(16, '.us', 141390.00, NULL, NULL, 1, 160, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(17, '.biz', 232900.00, NULL, NULL, 1, 170, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(18, '.cc', 372690.00, NULL, NULL, 1, 180, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(19, '.name', 143290.00, NULL, NULL, 1, 190, '2026-06-20 11:20:39', '2026-06-20 11:20:39'),
+(20, '.tv', 487990.00, NULL, NULL, 1, 200, '2026-06-20 11:20:39', '2026-06-20 11:20:39');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tblhosting`
 --
 
@@ -174,6 +218,14 @@ CREATE TABLE `tblinvoices` (
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Invoice tagihan klien';
+
+--
+-- Dumping data for table `tblinvoices`
+--
+
+INSERT INTO `tblinvoices` (`id`, `userid`, `order_id`, `status`, `total`, `duedate`, `datepaid`, `created_at`, `updated_at`) VALUES
+(1, 4, 1, 'Paid', 185000.00, '2026-06-10', '2026-06-13 11:23:57', '2026-06-09 14:02:37', '2026-06-13 11:23:57'),
+(2, 5, 3, 'Paid', 185000.00, '2026-06-11', '2026-06-13 11:23:57', '2026-06-10 15:13:33', '2026-06-13 11:23:57');
 
 -- --------------------------------------------------------
 
@@ -424,6 +476,124 @@ CREATE TABLE `tbl_cron_logs` (
   `detail` text DEFAULT NULL COMMENT 'Detail JSON: daftar order_number, client, alasan, dll'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Audit log eksekusi cron job (otomatisasi sistem)';
 
+--
+-- Dumping data for table `tbl_cron_logs`
+--
+
+INSERT INTO `tbl_cron_logs` (`id`, `cron_name`, `run_at`, `total_found`, `total_deleted`, `total_errors`, `detail`) VALUES
+(53, 'cron_hosting_expired', '2026-06-19 07:45:01', 0, 0, 0, '[]'),
+(54, 'cron_hosting_expired', '2026-06-19 08:00:01', 0, 0, 0, '[]'),
+(55, 'cron_hosting_expired', '2026-06-19 08:15:02', 0, 0, 0, '[]'),
+(56, 'cron_hosting_expired', '2026-06-19 08:30:01', 0, 0, 0, '[]'),
+(57, 'cron_hosting_expired', '2026-06-19 08:45:01', 0, 0, 0, '[]'),
+(58, 'cron_hosting_expired', '2026-06-19 09:00:02', 0, 0, 0, '[]'),
+(59, 'cron_hosting_expired', '2026-06-19 09:15:02', 0, 0, 0, '[]'),
+(60, 'cron_hosting_expired', '2026-06-19 09:30:01', 0, 0, 0, '[]'),
+(61, 'cron_hosting_expired', '2026-06-19 09:45:01', 0, 0, 0, '[]'),
+(62, 'cron_hosting_expired', '2026-06-19 10:00:01', 0, 0, 0, '[]'),
+(63, 'cron_hosting_expired', '2026-06-19 10:15:01', 0, 0, 0, '[]'),
+(64, 'cron_hosting_expired', '2026-06-19 10:30:02', 0, 0, 0, '[]'),
+(65, 'cron_hosting_expired', '2026-06-19 10:45:01', 0, 0, 0, '[]'),
+(66, 'cron_hosting_expired', '2026-06-19 11:00:01', 0, 0, 0, '[]'),
+(67, 'cron_hosting_expired', '2026-06-19 11:15:01', 0, 0, 0, '[]'),
+(68, 'cron_hosting_expired', '2026-06-19 11:30:01', 0, 0, 0, '[]'),
+(69, 'cron_hosting_expired', '2026-06-19 11:45:02', 0, 0, 0, '[]'),
+(70, 'cron_hosting_expired', '2026-06-19 12:00:02', 0, 0, 0, '[]'),
+(71, 'cron_hosting_expired', '2026-06-19 12:15:01', 0, 0, 0, '[]'),
+(72, 'cron_hosting_expired', '2026-06-19 12:30:02', 0, 0, 0, '[]'),
+(73, 'cron_hosting_expired', '2026-06-19 12:45:01', 0, 0, 0, '[]'),
+(74, 'cron_hosting_expired', '2026-06-19 13:00:01', 0, 0, 0, '[]'),
+(75, 'cron_hosting_expired', '2026-06-19 13:15:01', 0, 0, 0, '[]'),
+(76, 'cron_hosting_expired', '2026-06-19 13:30:02', 0, 0, 0, '[]'),
+(77, 'cron_hosting_expired', '2026-06-19 13:45:01', 0, 0, 0, '[]'),
+(78, 'cron_hosting_expired', '2026-06-19 14:00:01', 0, 0, 0, '[]'),
+(79, 'cron_hosting_expired', '2026-06-19 14:15:01', 0, 0, 0, '[]'),
+(80, 'cron_hosting_expired', '2026-06-19 14:30:02', 0, 0, 0, '[]'),
+(81, 'cron_hosting_expired', '2026-06-19 14:45:02', 0, 0, 0, '[]'),
+(82, 'cron_hosting_expired', '2026-06-19 15:00:01', 0, 0, 0, '[]'),
+(83, 'cron_hosting_expired', '2026-06-19 15:15:01', 0, 0, 0, '[]'),
+(84, 'cron_hosting_expired', '2026-06-19 15:30:02', 0, 0, 0, '[]'),
+(85, 'cron_hosting_expired', '2026-06-19 15:45:01', 0, 0, 0, '[]'),
+(86, 'cron_hosting_expired', '2026-06-19 16:00:02', 0, 0, 0, '[]'),
+(87, 'cron_hosting_expired', '2026-06-19 16:15:02', 0, 0, 0, '[]'),
+(88, 'cron_hosting_expired', '2026-06-19 16:30:01', 0, 0, 0, '[]'),
+(89, 'cron_hosting_expired', '2026-06-19 16:45:02', 0, 0, 0, '[]'),
+(90, 'cron_hosting_expired', '2026-06-19 17:00:02', 0, 0, 0, '[]'),
+(91, 'cron_hosting_expired', '2026-06-19 17:15:01', 0, 0, 0, '[]'),
+(92, 'cron_hosting_expired', '2026-06-19 17:30:02', 0, 0, 0, '[]'),
+(93, 'cron_hosting_expired', '2026-06-19 17:45:01', 0, 0, 0, '[]'),
+(94, 'cron_hosting_expired', '2026-06-19 18:00:01', 0, 0, 0, '[]'),
+(95, 'cron_hosting_expired', '2026-06-19 18:15:01', 0, 0, 0, '[]'),
+(96, 'cron_hosting_expired', '2026-06-19 18:30:02', 0, 0, 0, '[]'),
+(97, 'cron_hosting_expired', '2026-06-19 18:45:01', 0, 0, 0, '[]'),
+(98, 'cron_hosting_expired', '2026-06-19 19:00:01', 0, 0, 0, '[]'),
+(99, 'cron_hosting_expired', '2026-06-19 19:15:01', 0, 0, 0, '[]'),
+(100, 'cron_hosting_expired', '2026-06-19 19:30:01', 0, 0, 0, '[]'),
+(101, 'cron_hosting_expired', '2026-06-19 19:45:01', 0, 0, 0, '[]'),
+(102, 'cron_hosting_expired', '2026-06-19 20:00:01', 0, 0, 0, '[]'),
+(103, 'cron_hosting_expired', '2026-06-19 20:15:01', 0, 0, 0, '[]'),
+(104, 'cron_hosting_expired', '2026-06-19 20:30:02', 0, 0, 0, '[]'),
+(105, 'cron_hosting_expired', '2026-06-19 20:45:01', 0, 0, 0, '[]'),
+(106, 'cron_hosting_expired', '2026-06-19 21:00:02', 0, 0, 0, '[]'),
+(107, 'cron_hosting_expired', '2026-06-19 21:15:01', 0, 0, 0, '[]'),
+(108, 'cron_hosting_expired', '2026-06-19 21:30:02', 0, 0, 0, '[]'),
+(109, 'cron_hosting_expired', '2026-06-19 21:45:02', 0, 0, 0, '[]'),
+(110, 'cron_hosting_expired', '2026-06-19 22:00:01', 0, 0, 0, '[]'),
+(111, 'cron_hosting_expired', '2026-06-19 22:15:02', 0, 0, 0, '[]'),
+(112, 'cron_hosting_expired', '2026-06-19 22:30:02', 0, 0, 0, '[]'),
+(113, 'cron_hosting_expired', '2026-06-19 22:45:01', 0, 0, 0, '[]'),
+(114, 'cron_hosting_expired', '2026-06-19 23:00:01', 0, 0, 0, '[]'),
+(115, 'cron_hosting_expired', '2026-06-19 23:15:01', 0, 0, 0, '[]'),
+(116, 'cron_hosting_expired', '2026-06-19 23:30:01', 0, 0, 0, '[]'),
+(117, 'cron_hosting_expired', '2026-06-19 23:45:01', 0, 0, 0, '[]'),
+(118, 'cron_hosting_expired', '2026-06-20 00:00:01', 0, 0, 0, '[]'),
+(119, 'cron_hosting_expired', '2026-06-20 00:15:02', 0, 0, 0, '[]'),
+(120, 'cron_hosting_expired', '2026-06-20 00:30:01', 0, 0, 0, '[]'),
+(121, 'cron_hosting_expired', '2026-06-20 00:45:01', 0, 0, 0, '[]'),
+(122, 'cron_hosting_expired', '2026-06-20 01:00:01', 0, 0, 0, '[]'),
+(123, 'cron_hosting_expired', '2026-06-20 01:15:01', 0, 0, 0, '[]'),
+(124, 'cron_hosting_expired', '2026-06-20 01:30:02', 0, 0, 0, '[]'),
+(125, 'cron_hosting_expired', '2026-06-20 01:45:02', 0, 0, 0, '[]'),
+(126, 'cron_hosting_expired', '2026-06-20 02:00:01', 0, 0, 0, '[]'),
+(127, 'cron_hosting_expired', '2026-06-20 02:15:01', 0, 0, 0, '[]'),
+(128, 'cron_hosting_expired', '2026-06-20 02:30:01', 0, 0, 0, '[]'),
+(129, 'cron_hosting_expired', '2026-06-20 02:45:01', 0, 0, 0, '[]'),
+(130, 'cron_hosting_expired', '2026-06-20 03:00:02', 0, 0, 0, '[]'),
+(131, 'cron_hosting_expired', '2026-06-20 03:15:01', 0, 0, 0, '[]'),
+(132, 'cron_hosting_expired', '2026-06-20 03:30:01', 0, 0, 0, '[]'),
+(133, 'cron_hosting_expired', '2026-06-20 03:45:01', 0, 0, 0, '[]'),
+(134, 'cron_hosting_expired', '2026-06-20 04:00:02', 0, 0, 0, '[]'),
+(135, 'cron_hosting_expired', '2026-06-20 04:15:01', 0, 0, 0, '[]'),
+(136, 'cron_hosting_expired', '2026-06-20 04:30:01', 0, 0, 0, '[]'),
+(137, 'cron_hosting_expired', '2026-06-20 04:45:01', 0, 0, 0, '[]'),
+(138, 'cron_hosting_expired', '2026-06-20 05:00:02', 0, 0, 0, '[]'),
+(139, 'cron_hosting_expired', '2026-06-20 05:15:02', 0, 0, 0, '[]'),
+(140, 'cron_hosting_expired', '2026-06-20 05:30:01', 0, 0, 0, '[]'),
+(141, 'cron_hosting_expired', '2026-06-20 05:45:02', 0, 0, 0, '[]'),
+(142, 'cron_hosting_expired', '2026-06-20 06:00:01', 0, 0, 0, '[]'),
+(143, 'cron_hosting_expired', '2026-06-20 06:15:01', 0, 0, 0, '[]'),
+(144, 'cron_hosting_expired', '2026-06-20 06:30:01', 0, 0, 0, '[]'),
+(145, 'cron_hosting_expired', '2026-06-20 06:45:01', 0, 0, 0, '[]'),
+(146, 'cron_hosting_expired', '2026-06-20 07:00:02', 0, 0, 0, '[]'),
+(147, 'cron_hosting_expired', '2026-06-20 07:15:01', 0, 0, 0, '[]'),
+(148, 'cron_hosting_expired', '2026-06-20 07:30:01', 0, 0, 0, '[]'),
+(149, 'cron_hosting_expired', '2026-06-20 07:45:02', 0, 0, 0, '[]'),
+(150, 'cron_hosting_expired', '2026-06-20 08:00:01', 0, 0, 0, '[]'),
+(151, 'cron_hosting_expired', '2026-06-20 08:15:02', 0, 0, 0, '[]'),
+(152, 'cron_hosting_expired', '2026-06-20 08:30:01', 0, 0, 0, '[]'),
+(153, 'cron_hosting_expired', '2026-06-20 08:45:01', 0, 0, 0, '[]'),
+(154, 'cron_hosting_expired', '2026-06-20 09:00:02', 0, 0, 0, '[]'),
+(155, 'cron_hosting_expired', '2026-06-20 09:15:01', 0, 0, 0, '[]'),
+(156, 'cron_hosting_expired', '2026-06-20 09:30:01', 0, 0, 0, '[]'),
+(157, 'cron_hosting_expired', '2026-06-20 09:45:02', 0, 0, 0, '[]'),
+(158, 'cron_hosting_expired', '2026-06-20 10:00:01', 0, 0, 0, '[]'),
+(159, 'cron_hosting_expired', '2026-06-20 10:15:01', 0, 0, 0, '[]'),
+(160, 'cron_hosting_expired', '2026-06-20 10:30:02', 0, 0, 0, '[]'),
+(161, 'cron_hosting_expired', '2026-06-20 10:45:01', 0, 0, 0, '[]'),
+(162, 'cron_hosting_expired', '2026-06-20 11:00:01', 0, 0, 0, '[]'),
+(163, 'cron_hosting_expired', '2026-06-20 11:15:01', 0, 0, 0, '[]'),
+(164, 'cron_hosting_expired', '2026-06-20 11:30:01', 0, 0, 0, '[]');
+
 -- --------------------------------------------------------
 
 --
@@ -489,6 +659,14 @@ ALTER TABLE `tbldomains`
   ADD KEY `idx_status` (`status`);
 
 --
+-- Indexes for table `tbldomain_pricing`
+--
+ALTER TABLE `tbldomain_pricing`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `idx_tld` (`tld`),
+  ADD KEY `idx_aktif` (`aktif`);
+
+--
 -- Indexes for table `tblhosting`
 --
 ALTER TABLE `tblhosting`
@@ -506,7 +684,8 @@ ALTER TABLE `tblinvoices`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_userid` (`userid`),
   ADD KEY `idx_status` (`status`),
-  ADD KEY `idx_order_id` (`order_id`);
+  ADD KEY `idx_order_id` (`order_id`),
+  ADD KEY `idx_userid_status` (`userid`,`status`);
 
 --
 -- Indexes for table `tblnotifikasi`
@@ -621,6 +800,12 @@ ALTER TABLE `tbldomains`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tbldomain_pricing`
+--
+ALTER TABLE `tbldomain_pricing`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+
+--
 -- AUTO_INCREMENT for table `tblhosting`
 --
 ALTER TABLE `tblhosting`
@@ -630,7 +815,7 @@ ALTER TABLE `tblhosting`
 -- AUTO_INCREMENT for table `tblinvoices`
 --
 ALTER TABLE `tblinvoices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tblnotifikasi`
@@ -678,7 +863,7 @@ ALTER TABLE `tblticket_replies`
 -- AUTO_INCREMENT for table `tbl_cron_logs`
 --
 ALTER TABLE `tbl_cron_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
 
 --
 -- AUTO_INCREMENT for table `tbl_product_logs`
