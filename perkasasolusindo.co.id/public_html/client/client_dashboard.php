@@ -379,7 +379,7 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <img src="/assets/logo.png" alt="Logo" onerror="this.style.display='none'">
+      <img src="/../assets/images/CDR LOGO PERKASA Putih with border.png" alt="Logo" onerror="this.style.display='none'">
       <div class="brand-text">PERKASA <span>SOLUSINDO</span></div>
     </div>
 
