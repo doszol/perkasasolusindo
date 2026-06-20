@@ -1209,7 +1209,11 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
         // Cek apakah ada invoice unpaid untuk hosting ini
         $hasUnpaidInvoice = false;
         foreach ($invoiceHosting as $inv) {
-            if (!empty($inv['order_number']) && strpos($h['domain'], '') !== false) {
+            if (
+                !empty($inv['order_number']) &&
+                !empty($h['domain']) &&
+                strpos($inv['order_number'], $h['domain']) !== false
+            ) {
                 $hasUnpaidInvoice = true; break;
             }
         }
