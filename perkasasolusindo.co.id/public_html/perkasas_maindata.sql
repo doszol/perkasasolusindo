@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 20, 2026 at 01:51 PM
+-- Generation Time: Jun 21, 2026 at 09:04 AM
 -- Server version: 10.3.39-MariaDB-cll-lve
 -- PHP Version: 7.3.33
 
@@ -106,7 +106,7 @@ INSERT INTO `tblclients` (`id`, `firstname`, `lastname`, `email`, `phonenumber`,
 (2, 'Raja', 'Athena', 'raja@gmail.com', '081000111000', 'Raja Tech', 'Jl. Bima No.36', 'RT06 RW01 Kebonsari, Candi', 'Sidoarjo', 'Jawa Timur', '61271', 'ID', 1, '$2y$10$6EumiPcIKLPZvtqM0chmkO4RIb2OaZeDh2MOoY2bwLeUKvaHKs/P.', 1, 1, 1, 3, 1, '2026-06-04 15:38:59', '2026-06-05 10:20:33', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (3, 'BIMA', 'x', 'bimapamungkas0000@gmail.com', '081246684665', 'CCTV', 'Bligo RT.14 RW.06 Candi-Sidoarjo', '', 'Kabupaten Sidoarjo', 'Jawa Timur', '61271', 'ID', 1, '$2y$10$c0AUpQXlKxIfJfQuTdSXHOapfXbYlDp..xSw5qxrDezuX/9DcCD4G', 1, 1, 1, 1, 1, '2026-06-04 15:44:52', '2026-06-06 12:38:23', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (4, 'Don', 'Doszol', 'amrlfuad9616@gmail.com', '085851460867', 'mbuh', 'Jl. Bima No.36', '', 'Sidoarjo', 'Jawa Timur', '61271', 'ID', 1, '$2y$10$bhCQeiAxXavd58rt1dsFpOTVWKnWlZZwdJekZknsBRRnCqpth3iB2', 1, 1, 1, 3, 1, '2026-06-06 08:53:29', '2026-06-12 13:29:03', NULL, '3515072204990003', 'Jl. Bima No. 36 Kebonsari Candi Sidoarjo', '1999-04-22', 'L', NULL, 'ktp_1780988557_393106454a27.jpeg', NULL, NULL),
-(5, 'Amirul', 'Athena', 'sangmaestro123@gmail.com', '085851460867', 'sang maestro', 'Perum Permata Candiloka, Blok B14 RT.04/RW.04', 'Balonggabus, Candi', 'Sidoarjo', 'Jawa Timur', '61271', 'ID', 1, '$2y$10$WhXbRr3qFyz2Am31wuRs/eNmoVtIcuenks.Ejyo00cX0XKC/sbciu', 1, 1, 1, 3, 1, '2026-06-10 15:13:33', '2026-06-12 07:50:21', NULL, '3515072204990004', 'Jl. Bima No. 36 Kebonsari Candi Sidoarjo', '1999-01-10', 'L', NULL, 'ktp_1781079213_fc50746466d7.jpeg', NULL, NULL),
+(5, 'Amirul', 'Athena', 'sangmaestro123@gmail.com', '085851460867', 'sang maestro', 'Perum Permata Candiloka, Blok B14 RT.04/RW.04', 'Balonggabus, Candi', 'Sidoarjo', 'Jawa Timur', '61271', 'ID', 1, '$2y$10$9KZK0IKiv3gDSnIKcRen6eHypfv8mcVMM2XOS.35eAdsQNckoob4a', 1, 1, 1, 3, 1, '2026-06-10 15:13:33', '2026-06-20 14:05:25', NULL, '3515072204990004', 'Jl. Bima No. 36 Kebonsari Candi Sidoarjo', '1999-01-10', 'L', NULL, 'ktp_1781079213_fc50746466d7.jpeg', NULL, NULL),
 (6, 'dosol', 'mantab', 'se.marjagatech@gmail.com', '085851460867', NULL, 'Jl. Bima No.36', NULL, 'Sidoarjo', 'Jawa Timur', '61271', 'ID', 1, '$2y$10$iL.02xmxHgN/XCA0ihekjOmzOJJ2UnKxiwemiM0FYJKIKkqiQHNSW', 0, 1, 1, 4, 1, '2026-06-11 11:16:45', '2026-06-12 13:31:45', 'it', '3515072204990007', 'Jl. Bima No. 36 Kebonsari Candi Sidoarjo', '1999-02-12', 'L', NULL, 'teknisi_6_1781151405.jpeg', NULL, NULL),
 (7, 'teknisi', 'fuad', 'se.marjagatechstudio@gmail.com', '085851460867', NULL, 'Jl. Bima No.36', NULL, 'Sidoarjo', 'Jawa Timur', '61271', 'ID', 1, '$2y$10$z5nkPkUleORqh85dEMREw./SNM4O7i8vwYod2fl2SNLpMW7C3SXUm', 0, 1, 1, 4, 1, '2026-06-11 11:27:38', '2026-06-11 13:30:15', 'it', '3515072204990009', 'Jl. Bima No. 36 Kebonsari Candi Sidoarjo', '1999-05-01', 'L', NULL, 'teknisi_7_1781152058.jpeg', NULL, NULL);
 
@@ -206,7 +206,8 @@ CREATE TABLE `tblhosting` (
 --
 
 INSERT INTO `tblhosting` (`id`, `userid`, `packageid`, `domain`, `domain_type`, `domain_tld`, `domain_price`, `da_username`, `da_password`, `da_status`, `da_db_name`, `da_db_user`, `da_db_pass`, `da_db_host`, `da_docroot`, `domainstatus`, `nextduedate`, `payment_deadline`, `created_at`, `updated_at`, `payment_verified_at`, `payment_verified_by`) VALUES
-(4, 4, 5, 'fuaddosol.perkasasolusindo.co.id', 'subdomain', '', 0, 'on46', 'wr5a297Yw3Kcys', 'active', '', '', '', 'localhost', '/home/on46/domains/fuaddosol.perkasasolusindo.co.id/public_html', 'Active', '2026-07-20', NULL, '2026-06-20 11:38:57', '2026-06-20 12:19:32', NULL, NULL);
+(4, 4, 5, 'fuaddosol.perkasasolusindo.co.id', 'subdomain', '', 0, 'on46', 'wr5a297Yw3Kcys', 'active', '', '', '', 'localhost', '/home/on46/domains/fuaddosol.perkasasolusindo.co.id/public_html', 'Active', '2026-07-20', NULL, '2026-06-20 11:38:57', '2026-06-20 12:19:32', NULL, NULL),
+(5, 5, 6, 'sangmaestro.perkasasolusindo.co.id', 'subdomain', '', 0, 'mirul97', 'hKhG5Thsfzn3YU', 'active', '', '', '', 'localhost', '/home/mirul97/domains/sangmaestro.perkasasolusindo.co.id/public_html', 'Active', '2026-07-20', NULL, '2026-06-20 14:05:58', '2026-06-20 14:07:11', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -233,7 +234,8 @@ CREATE TABLE `tblinvoices` (
 INSERT INTO `tblinvoices` (`id`, `userid`, `order_id`, `status`, `total`, `duedate`, `datepaid`, `created_at`, `updated_at`) VALUES
 (1, 4, 1, 'Paid', 185000.00, '2026-06-10', '2026-06-13 11:23:57', '2026-06-09 14:02:37', '2026-06-13 11:23:57'),
 (2, 5, 3, 'Paid', 185000.00, '2026-06-11', '2026-06-13 11:23:57', '2026-06-10 15:13:33', '2026-06-13 11:23:57'),
-(3, 4, 7, 'Paid', 100000.00, '2026-06-21', '2026-06-20 12:14:32', '2026-06-20 11:38:57', '2026-06-20 12:14:32');
+(3, 4, 7, 'Paid', 100000.00, '2026-06-21', '2026-06-20 12:14:32', '2026-06-20 11:38:57', '2026-06-20 12:14:32'),
+(4, 5, 8, 'Paid', 200000.00, '2026-06-21', '2026-06-20 14:06:52', '2026-06-20 14:05:58', '2026-06-20 14:06:52');
 
 -- --------------------------------------------------------
 
@@ -289,7 +291,14 @@ INSERT INTO `tblnotifikasi` (`id`, `userid`, `order_id`, `judul`, `pesan`, `tipe
 (40, 1, 7, 'Konfirmasi Pembayaran — #HST-20260620-9518', 'Client Don Doszol telah mengupload bukti pembayaran hosting untuk order #HST-20260620-9518. Silakan periksa dan verifikasi pembayaran.', 'info', 1, '2026-06-20 12:03:39'),
 (41, 3, 7, 'Konfirmasi Pembayaran — #HST-20260620-9518', 'Client Don Doszol telah mengupload bukti pembayaran hosting untuk order #HST-20260620-9518. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-20 12:03:39'),
 (42, 4, 7, 'Pembayaran Dikonfirmasi ✅', 'Pembayaran untuk order HST-20260620-9518 telah dikonfirmasi. Layanan Anda akan segera diproses.', 'sukses', 1, '2026-06-20 12:14:32'),
-(43, 4, 7, '✅ Hosting Anda Sudah Aktif!', 'Akun hosting untuk fuaddosol.perkasasolusindo.co.id sudah aktif. Berlaku hingga 20 Jul 2026. Credential login dikirim ke email Anda.', 'sukses', 1, '2026-06-20 12:19:32');
+(43, 4, 7, '✅ Hosting Anda Sudah Aktif!', 'Akun hosting untuk fuaddosol.perkasasolusindo.co.id sudah aktif. Berlaku hingga 20 Jul 2026. Credential login dikirim ke email Anda.', 'sukses', 1, '2026-06-20 12:19:32'),
+(44, 5, 8, 'Order Hosting Anda Berhasil Dikirim ☁️', 'Terima kasih! Order hosting paket Hosting Business (#HST-20260620-6698) berhasil diterima. Domain: sangmaestro.perkasasolusindo.co.id. Tim kami akan memproses dalam 24 jam kerja.', 'sukses', 1, '2026-06-20 14:05:58'),
+(45, 1, 8, 'Order Hosting Baru — HST-20260620-6698', 'Order hosting baru dari Amirul Athena untuk paket Hosting Business. Domain: sangmaestro.perkasasolusindo.co.id. Periode: 1 bulan.', 'info', 0, '2026-06-20 14:05:58'),
+(46, 3, 8, 'Order Hosting Baru — HST-20260620-6698', 'Order hosting baru dari Amirul Athena untuk paket Hosting Business. Domain: sangmaestro.perkasasolusindo.co.id. Periode: 1 bulan.', 'info', 0, '2026-06-20 14:05:58'),
+(47, 1, 8, 'Konfirmasi Pembayaran — #HST-20260620-6698', 'Client Amirul Athena telah mengupload bukti pembayaran hosting untuk order #HST-20260620-6698. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-20 14:06:33'),
+(48, 3, 8, 'Konfirmasi Pembayaran — #HST-20260620-6698', 'Client Amirul Athena telah mengupload bukti pembayaran hosting untuk order #HST-20260620-6698. Silakan periksa dan verifikasi pembayaran.', 'info', 0, '2026-06-20 14:06:33'),
+(49, 5, 8, 'Pembayaran Dikonfirmasi ✅', 'Pembayaran untuk order HST-20260620-6698 telah dikonfirmasi. Layanan Anda akan segera diproses.', 'sukses', 1, '2026-06-20 14:06:52'),
+(50, 5, 8, '✅ Hosting Anda Sudah Aktif!', 'Akun hosting untuk sangmaestro.perkasasolusindo.co.id sudah aktif. Berlaku hingga 20 Jul 2026. Credential login dikirim ke email Anda.', 'sukses', 1, '2026-06-20 14:07:11');
 
 -- --------------------------------------------------------
 
@@ -341,7 +350,8 @@ CREATE TABLE `tblorders` (
 INSERT INTO `tblorders` (`id`, `order_number`, `order_type`, `wifi_status`, `order_status`, `alamat_pasang`, `rt`, `rw`, `kelurahan`, `kecamatan`, `kota`, `provinsi`, `kodepos`, `koordinat_lat`, `koordinat_lng`, `teknisi_id`, `teknisi_id_2`, `jadwal_instalasi`, `tgl_aktif`, `payment_status`, `payment_proof`, `tagihan_bulan`, `payment_deadline`, `userid`, `productid`, `periode_bulan`, `status`, `note`, `created_at`, `updated_at`, `id_pelanggan`, `tanggal_expire`, `installation_paid_until`, `reminder_sent_at`) VALUES
 (1, 'ORD-20260609-0004', 'wifi', 'active', 'pending', 'Perum Permata Candiloka, Blok B14', '04', '04', 'Balonggabus', 'Candi', 'Sidoarjo', 'Jawa Timur', '61271', NULL, NULL, 6, 7, '2026-06-12 11:21:00', '2026-06-12', 'lunas', 'bukti_ORD-20260609-0004_1781225038_77e02e51.png', NULL, NULL, 4, 1, NULL, 'Active', NULL, '2026-06-09 14:02:37', '2026-06-13 11:23:57', '5501261417', '2026-07-20', '2026-07-20', NULL),
 (3, 'ORD-20260610-0003', 'wifi', 'active', 'pending', 'Perum Permata Candiloka, Blok B14', '04', '04', 'Balonggabus', 'Candi', 'Sidoarjo', 'Jawa Timur', '61271', NULL, NULL, 6, 7, '2026-06-12 15:32:00', '2026-06-12', 'lunas', 'bukti_ORD-20260610-0003_1781247873_bd54c20a.png', NULL, NULL, 5, 1, NULL, 'Active', 'ok baik, besok meluncur', '2026-06-10 15:13:33', '2026-06-13 11:23:57', '5501261418', '2026-07-20', '2026-07-20', NULL),
-(7, 'HST-20260620-9518', 'hosting', 'active', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'lunas', 'bukti_HST-20260620-9518_1781931817_297ed26e.png', NULL, NULL, 4, 5, 1, 'Active', 'Domain Gratis: fuaddosol.perkasasolusindo.co.id | Periode: 1 bulan | Diskon: 0% | Total: Rp 100.000', '2026-06-20 11:38:57', '2026-06-20 12:19:32', NULL, '2026-07-20', NULL, NULL);
+(7, 'HST-20260620-9518', 'hosting', 'active', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'lunas', 'bukti_HST-20260620-9518_1781931817_297ed26e.png', NULL, NULL, 4, 5, 1, 'Active', 'Domain Gratis: fuaddosol.perkasasolusindo.co.id | Periode: 1 bulan | Diskon: 0% | Total: Rp 100.000', '2026-06-20 11:38:57', '2026-06-20 12:19:32', NULL, '2026-07-20', NULL, NULL),
+(8, 'HST-20260620-6698', 'hosting', 'active', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'lunas', 'bukti_HST-20260620-6698_1781939193_02f94f10.jpeg', NULL, NULL, 5, 6, 1, 'Active', 'Domain Gratis: sangmaestro.perkasasolusindo.co.id | Periode: 1 bulan | Diskon: 0% | Total: Rp 200.000', '2026-06-20 14:05:58', '2026-06-20 14:07:11', NULL, '2026-07-20', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -382,7 +392,10 @@ INSERT INTO `tblorder_status_logs` (`id`, `order_id`, `old_status`, `new_status`
 (16, 3, 'installed', 'active', 1, 'admin', 'ID Pelanggan: 5501261418. Layanan WiFi diaktifkan.', '2026-06-12 14:06:18'),
 (17, 7, 'belum_bayar', 'sudah_bayar', 4, 'client', 'Client mengupload bukti pembayaran.', '2026-06-20 12:03:39'),
 (18, 7, 'sudah_bayar', 'lunas', 1, 'admin', 'Pembayaran dikonfirmasi lunas oleh admin setelah verifikasi bukti transfer.', '2026-06-20 12:14:32'),
-(19, 7, 'pending', 'active', 1, 'admin', '✅ Akun DA dibuat: on46 | 📁 Doc root: /home/on46/domains/fuaddosol.perkasasolusindo.co.id/public_html/ | ⚠️ Database gagal: Gagal buat database: Invalid Username', '2026-06-20 12:19:32');
+(19, 7, 'pending', 'active', 1, 'admin', '✅ Akun DA dibuat: on46 | 📁 Doc root: /home/on46/domains/fuaddosol.perkasasolusindo.co.id/public_html/ | ⚠️ Database gagal: Gagal buat database: Invalid Username', '2026-06-20 12:19:32'),
+(20, 8, 'belum_bayar', 'sudah_bayar', 5, 'client', 'Client mengupload bukti pembayaran.', '2026-06-20 14:06:33'),
+(21, 8, 'sudah_bayar', 'lunas', 1, 'admin', 'Pembayaran dikonfirmasi lunas oleh admin setelah verifikasi bukti transfer.', '2026-06-20 14:06:52'),
+(22, 8, 'pending', 'active', 1, 'admin', '✅ Akun DA dibuat: mirul97 | 📁 Doc root: /home/mirul97/domains/sangmaestro.perkasasolusindo.co.id/public_html/ | ⚠️ Database gagal: Gagal buat database: Invalid Username', '2026-06-20 14:07:11');
 
 -- --------------------------------------------------------
 
@@ -620,7 +633,84 @@ INSERT INTO `tbl_cron_logs` (`id`, `cron_name`, `run_at`, `total_found`, `total_
 (170, 'cron_hosting_expired', '2026-06-20 13:00:01', 0, 0, 0, '[]'),
 (171, 'cron_hosting_expired', '2026-06-20 13:15:01', 0, 0, 0, '[]'),
 (172, 'cron_hosting_expired', '2026-06-20 13:30:01', 0, 0, 0, '[]'),
-(173, 'cron_hosting_expired', '2026-06-20 13:45:02', 0, 0, 0, '[]');
+(173, 'cron_hosting_expired', '2026-06-20 13:45:02', 0, 0, 0, '[]'),
+(174, 'cron_hosting_expired', '2026-06-20 14:00:02', 0, 0, 0, '[]'),
+(175, 'cron_hosting_expired', '2026-06-20 14:15:01', 0, 0, 0, '[]'),
+(176, 'cron_hosting_expired', '2026-06-20 14:30:02', 0, 0, 0, '[]'),
+(177, 'cron_hosting_expired', '2026-06-20 14:45:01', 0, 0, 0, '[]'),
+(178, 'cron_hosting_expired', '2026-06-20 15:00:02', 0, 0, 0, '[]'),
+(179, 'cron_hosting_expired', '2026-06-20 15:15:02', 0, 0, 0, '[]'),
+(180, 'cron_hosting_expired', '2026-06-20 15:30:01', 0, 0, 0, '[]'),
+(181, 'cron_hosting_expired', '2026-06-20 15:45:01', 0, 0, 0, '[]'),
+(182, 'cron_hosting_expired', '2026-06-20 16:00:02', 0, 0, 0, '[]'),
+(183, 'cron_hosting_expired', '2026-06-20 16:15:02', 0, 0, 0, '[]'),
+(184, 'cron_hosting_expired', '2026-06-20 16:30:01', 0, 0, 0, '[]'),
+(185, 'cron_hosting_expired', '2026-06-20 16:45:02', 0, 0, 0, '[]'),
+(186, 'cron_hosting_expired', '2026-06-20 17:00:01', 0, 0, 0, '[]'),
+(187, 'cron_hosting_expired', '2026-06-20 17:15:01', 0, 0, 0, '[]'),
+(188, 'cron_hosting_expired', '2026-06-20 17:30:01', 0, 0, 0, '[]'),
+(189, 'cron_hosting_expired', '2026-06-20 17:45:01', 0, 0, 0, '[]'),
+(190, 'cron_hosting_expired', '2026-06-20 18:00:01', 0, 0, 0, '[]'),
+(191, 'cron_hosting_expired', '2026-06-20 18:15:01', 0, 0, 0, '[]'),
+(192, 'cron_hosting_expired', '2026-06-20 18:30:01', 0, 0, 0, '[]'),
+(193, 'cron_hosting_expired', '2026-06-20 18:45:01', 0, 0, 0, '[]'),
+(194, 'cron_hosting_expired', '2026-06-20 19:00:01', 0, 0, 0, '[]'),
+(195, 'cron_hosting_expired', '2026-06-20 19:15:01', 0, 0, 0, '[]'),
+(196, 'cron_hosting_expired', '2026-06-20 19:30:01', 0, 0, 0, '[]'),
+(197, 'cron_hosting_expired', '2026-06-20 19:45:02', 0, 0, 0, '[]'),
+(198, 'cron_hosting_expired', '2026-06-20 20:00:01', 0, 0, 0, '[]'),
+(199, 'cron_hosting_expired', '2026-06-20 20:15:01', 0, 0, 0, '[]'),
+(200, 'cron_hosting_expired', '2026-06-20 20:30:02', 0, 0, 0, '[]'),
+(201, 'cron_hosting_expired', '2026-06-20 20:45:02', 0, 0, 0, '[]'),
+(202, 'cron_hosting_expired', '2026-06-20 21:00:01', 0, 0, 0, '[]'),
+(203, 'cron_hosting_expired', '2026-06-20 21:15:02', 0, 0, 0, '[]'),
+(204, 'cron_hosting_expired', '2026-06-20 21:30:02', 0, 0, 0, '[]'),
+(205, 'cron_hosting_expired', '2026-06-20 21:45:02', 0, 0, 0, '[]'),
+(206, 'cron_hosting_expired', '2026-06-20 22:00:02', 0, 0, 0, '[]'),
+(207, 'cron_hosting_expired', '2026-06-20 22:15:02', 0, 0, 0, '[]'),
+(208, 'cron_hosting_expired', '2026-06-20 22:30:02', 0, 0, 0, '[]'),
+(209, 'cron_hosting_expired', '2026-06-20 22:45:02', 0, 0, 0, '[]'),
+(210, 'cron_hosting_expired', '2026-06-20 23:00:02', 0, 0, 0, '[]'),
+(211, 'cron_hosting_expired', '2026-06-20 23:15:01', 0, 0, 0, '[]'),
+(212, 'cron_hosting_expired', '2026-06-20 23:30:01', 0, 0, 0, '[]'),
+(213, 'cron_hosting_expired', '2026-06-20 23:45:01', 0, 0, 0, '[]'),
+(214, 'cron_hosting_expired', '2026-06-21 00:00:02', 0, 0, 0, '[]'),
+(215, 'cron_hosting_expired', '2026-06-21 00:15:02', 0, 0, 0, '[]'),
+(216, 'cron_hosting_expired', '2026-06-21 00:30:01', 0, 0, 0, '[]'),
+(217, 'cron_hosting_expired', '2026-06-21 00:45:01', 0, 0, 0, '[]'),
+(218, 'cron_hosting_expired', '2026-06-21 01:00:01', 0, 0, 0, '[]'),
+(219, 'cron_hosting_expired', '2026-06-21 01:15:02', 0, 0, 0, '[]'),
+(220, 'cron_hosting_expired', '2026-06-21 01:30:01', 0, 0, 0, '[]'),
+(221, 'cron_hosting_expired', '2026-06-21 01:45:02', 0, 0, 0, '[]'),
+(222, 'cron_hosting_expired', '2026-06-21 02:00:01', 0, 0, 0, '[]'),
+(223, 'cron_hosting_expired', '2026-06-21 02:15:01', 0, 0, 0, '[]'),
+(224, 'cron_hosting_expired', '2026-06-21 02:30:01', 0, 0, 0, '[]'),
+(225, 'cron_hosting_expired', '2026-06-21 02:45:01', 0, 0, 0, '[]'),
+(226, 'cron_hosting_expired', '2026-06-21 03:00:02', 0, 0, 0, '[]'),
+(227, 'cron_hosting_expired', '2026-06-21 03:15:01', 0, 0, 0, '[]'),
+(228, 'cron_hosting_expired', '2026-06-21 03:30:01', 0, 0, 0, '[]'),
+(229, 'cron_hosting_expired', '2026-06-21 03:45:02', 0, 0, 0, '[]'),
+(230, 'cron_hosting_expired', '2026-06-21 04:00:02', 0, 0, 0, '[]'),
+(231, 'cron_hosting_expired', '2026-06-21 04:15:02', 0, 0, 0, '[]'),
+(232, 'cron_hosting_expired', '2026-06-21 04:30:01', 0, 0, 0, '[]'),
+(233, 'cron_hosting_expired', '2026-06-21 04:45:02', 0, 0, 0, '[]'),
+(234, 'cron_hosting_expired', '2026-06-21 05:00:01', 0, 0, 0, '[]'),
+(235, 'cron_hosting_expired', '2026-06-21 05:15:02', 0, 0, 0, '[]'),
+(236, 'cron_hosting_expired', '2026-06-21 05:30:02', 0, 0, 0, '[]'),
+(237, 'cron_hosting_expired', '2026-06-21 05:45:02', 0, 0, 0, '[]'),
+(238, 'cron_hosting_expired', '2026-06-21 06:00:01', 0, 0, 0, '[]'),
+(239, 'cron_hosting_expired', '2026-06-21 06:15:02', 0, 0, 0, '[]'),
+(240, 'cron_hosting_expired', '2026-06-21 06:30:02', 0, 0, 0, '[]'),
+(241, 'cron_hosting_expired', '2026-06-21 06:45:01', 0, 0, 0, '[]'),
+(242, 'cron_hosting_expired', '2026-06-21 07:00:02', 0, 0, 0, '[]'),
+(243, 'cron_hosting_expired', '2026-06-21 07:15:01', 0, 0, 0, '[]'),
+(244, 'cron_hosting_expired', '2026-06-21 07:30:02', 0, 0, 0, '[]'),
+(245, 'cron_hosting_expired', '2026-06-21 07:45:01', 0, 0, 0, '[]'),
+(246, 'cron_hosting_expired', '2026-06-21 08:00:02', 0, 0, 0, '[]'),
+(247, 'cron_hosting_expired', '2026-06-21 08:15:01', 0, 0, 0, '[]'),
+(248, 'cron_hosting_expired', '2026-06-21 08:30:01', 0, 0, 0, '[]'),
+(249, 'cron_hosting_expired', '2026-06-21 08:45:01', 0, 0, 0, '[]'),
+(250, 'cron_hosting_expired', '2026-06-21 09:00:02', 0, 0, 0, '[]');
 
 -- --------------------------------------------------------
 
@@ -837,31 +927,31 @@ ALTER TABLE `tbldomain_pricing`
 -- AUTO_INCREMENT for table `tblhosting`
 --
 ALTER TABLE `tblhosting`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tblinvoices`
 --
 ALTER TABLE `tblinvoices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tblnotifikasi`
 --
 ALTER TABLE `tblnotifikasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `tblorders`
 --
 ALTER TABLE `tblorders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tblorder_status_logs`
 --
 ALTER TABLE `tblorder_status_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `tblpayment_monthly`
@@ -891,7 +981,7 @@ ALTER TABLE `tblticket_replies`
 -- AUTO_INCREMENT for table `tbl_cron_logs`
 --
 ALTER TABLE `tbl_cron_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=174;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=251;
 
 --
 -- AUTO_INCREMENT for table `tbl_product_logs`
