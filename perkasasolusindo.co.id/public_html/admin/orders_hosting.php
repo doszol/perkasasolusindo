@@ -610,7 +610,7 @@ $statusDefs = [
     </div>
 
     <!-- Table Card -->
-    <div class="card" style="padding:0;overflow:hidden;">
+    <div class="card" style="padding:0;" id="tableCard">
       <?php if(empty($orders)): ?>
         <div class="orders-empty">
           <i class="fa fa-server"></i>
