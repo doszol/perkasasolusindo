@@ -231,6 +231,8 @@ if (isset($_GET['edit'])) {
 <body>
 
 <!-- SIDEBAR -->
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="logo-mark">
@@ -336,7 +338,8 @@ if (isset($_GET['edit'])) {
 <!-- MAIN -->
 <main class="main">
   <div class="topbar">
-    <div class="page-title"><i class="fa fa-box-open" style="color:var(--accent);margin-right:10px;"></i>Produk Layanan</div>
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+      <i class="fa fa-box-open" style="color:var(--accent);margin-right:10px;"></i>Produk Layanan</div>
     <div class="topbar-right">
       <span class="date-badge"><i class="fa fa-calendar-days" style="margin-right:6px;"></i><?= date('d M Y') ?></span>
       <a href="/admin/admin_dashboard.php" class="topbar-btn" title="Dashboard"><i class="fa fa-gauge-high"></i></a>
@@ -650,6 +653,30 @@ toggleSpeedField();
 // Auto-submit search on Enter
 document.querySelector('.search-input')?.addEventListener('keydown', e => {
   if (e.key === 'Enter') e.target.closest('form').submit();
+});
+</script>
+
+
+<script>
+/* ── Mobile Sidebar Toggle ── */
+function toggleSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  if (hamburger) hamburger.classList.toggle('open');
+}
+function closeSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  if (sidebar)   sidebar.classList.remove('open');
+  if (overlay)   overlay.classList.remove('open');
+  if (hamburger) hamburger.classList.remove('open');
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeSidebar();
 });
 </script>
 

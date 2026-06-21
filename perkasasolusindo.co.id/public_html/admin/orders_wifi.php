@@ -355,6 +355,8 @@ $statusDefs = [
 <body>
 
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="logo-mark">
@@ -492,6 +494,7 @@ $statusDefs = [
 
   <!-- Topbar -->
   <div class="topbar">
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
     <div class="breadcrumb">
       <a href="/admin/admin_dashboard.php">Dashboard</a>
       <i class="fa fa-chevron-right"></i>
@@ -838,5 +841,29 @@ function closeLogoutModal() { document.getElementById('logoutModal').style.displ
 document.getElementById('logoutModal').addEventListener('click', function(e){ if(e.target===this) closeLogoutModal(); });
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLogoutModal(); });
 </script>
+
+<script>
+/* ── Mobile Sidebar Toggle ── */
+function toggleSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  if (hamburger) hamburger.classList.toggle('open');
+}
+function closeSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  if (sidebar)   sidebar.classList.remove('open');
+  if (overlay)   overlay.classList.remove('open');
+  if (hamburger) hamburger.classList.remove('open');
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeSidebar();
+});
+</script>
+
 </body>
 </html>

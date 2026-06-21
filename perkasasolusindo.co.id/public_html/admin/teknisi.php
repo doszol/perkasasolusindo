@@ -334,6 +334,8 @@ $totalInactive = $totalAll - $totalActive;
 <body>
 
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="logo-mark">
@@ -423,7 +425,8 @@ $totalInactive = $totalAll - $totalActive;
 <!-- ═══════════════ MAIN ═══════════════ -->
 <main class="main">
   <div class="topbar">
-    <div class="page-title">
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+      
       <i class="fa fa-screwdriver-wrench" style="color:var(--accent);margin-right:8px;"></i>
       Manajemen Teknisi
     </div>
@@ -965,5 +968,29 @@ document.getElementById('addForm').addEventListener('submit', function(e) {
   }
 });
 </script>
+
+<script>
+/* ── Mobile Sidebar Toggle ── */
+function toggleSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  if (hamburger) hamburger.classList.toggle('open');
+}
+function closeSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  if (sidebar)   sidebar.classList.remove('open');
+  if (overlay)   overlay.classList.remove('open');
+  if (hamburger) hamburger.classList.remove('open');
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeSidebar();
+});
+</script>
+
 </body>
 </html>

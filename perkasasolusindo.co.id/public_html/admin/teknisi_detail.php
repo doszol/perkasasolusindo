@@ -244,6 +244,8 @@ function wifiLabel($s) {
 <body>
 
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="logo-mark">
@@ -333,7 +335,8 @@ function wifiLabel($s) {
 <!-- ═══════════════ MAIN ═══════════════ -->
 <main class="main">
   <div class="topbar">
-    <div class="page-title" style="display:flex;align-items:center;gap:10px;">
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+      
       <a href="/admin/teknisi.php" style="color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px;">
         <i class="fa fa-arrow-left"></i> Teknisi
       </a>
@@ -715,5 +718,29 @@ function previewTekKtp(input) {
   }
 }
 </script>
+
+<script>
+/* ── Mobile Sidebar Toggle ── */
+function toggleSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  if (hamburger) hamburger.classList.toggle('open');
+}
+function closeSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  if (sidebar)   sidebar.classList.remove('open');
+  if (overlay)   overlay.classList.remove('open');
+  if (hamburger) hamburger.classList.remove('open');
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeSidebar();
+});
+</script>
+
 </body>
 </html>

@@ -206,6 +206,8 @@ $totalInactive = $totalAll - $totalActive;
 <body>
 
 <!-- ═══════════ SIDEBAR ═══════════ -->
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="logo-mark">
@@ -313,7 +315,8 @@ $totalInactive = $totalAll - $totalActive;
 <!-- ═══════════ MAIN ═══════════ -->
 <main class="main">
   <div class="topbar">
-    <div class="page-title"><i class="fa fa-users" style="color:var(--accent2);margin-right:8px;"></i>Data Klien</div>
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+      <i class="fa fa-users" style="color:var(--accent2);margin-right:8px;"></i>Data Klien</div>
     <div class="topbar-right">
       <span class="date-badge"><i class="fa fa-calendar-days" style="margin-right:6px;"></i><?= date('d M Y') ?></span>
       <a href="#" class="topbar-btn" onclick="confirmLogout(event)" title="Logout"><i class="fa fa-right-from-bracket"></i></a>
@@ -484,5 +487,29 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeLogoutModal();
 });
 </script>
+
+<script>
+/* ── Mobile Sidebar Toggle ── */
+function toggleSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  if (hamburger) hamburger.classList.toggle('open');
+}
+function closeSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  if (sidebar)   sidebar.classList.remove('open');
+  if (overlay)   overlay.classList.remove('open');
+  if (hamburger) hamburger.classList.remove('open');
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeSidebar();
+});
+</script>
+
 </body>
 </html>

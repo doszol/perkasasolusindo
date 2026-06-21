@@ -821,3 +821,181 @@ select.form-control option { background: var(--surface2); }
   font-size: 11px; font-weight: 700; color: #fff;
   flex-shrink: 0;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE – Mobile & Tablet
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Hamburger Button ── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  gap: 5px;
+  flex-shrink: 0;
+  z-index: 200;
+}
+.hamburger span {
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all .3s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Sidebar Overlay (mobile backdrop) ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 99;
+  backdrop-filter: blur(2px);
+}
+.sidebar-overlay.open { display: block; }
+
+/* ══════════════════════════════════════════════════════════════
+   BREAKPOINT ≤ 768px  (Mobile)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* Hamburger visible */
+  .hamburger { display: flex; }
+
+  /* Sidebar slides off-screen by default */
+  .sidebar {
+    transform: translateX(-100%);
+    z-index: 100;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0,0,0,.5);
+  }
+
+  /* Main takes full width */
+  .main { margin-left: 0; }
+
+  /* Topbar layout */
+  .topbar {
+    padding: 0 16px;
+    height: 58px;
+    gap: 10px;
+  }
+  .page-title { font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .date-badge { display: none; }
+
+  /* Content padding */
+  .content { padding: 16px; }
+
+  /* Welcome banner */
+  .welcome-banner { padding: 20px 18px; margin-bottom: 18px; }
+  .welcome-banner h1 { font-size: 17px; }
+  .welcome-banner p { font-size: 12px; }
+
+  /* Quick actions wrap & shrink */
+  .quick-actions { gap: 8px; }
+  .quick-actions .btn { padding: 8px 12px; font-size: 12px; }
+
+  /* Stat grid single column */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .stat-value { font-size: 22px; }
+
+  /* Two-column → single */
+  .grid-2 { grid-template-columns: 1fr; gap: 14px; }
+
+  /* Tables: horizontal scroll */
+  .card { overflow: visible; }
+  .table-wrap, .log-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { min-width: 540px; }
+  th, td { padding: 9px 12px; font-size: 12px; }
+
+  /* Filter bar */
+  .filter-bar { flex-wrap: wrap; gap: 8px; }
+  .search-wrap { margin-left: 0; width: 100%; }
+  .search-input { width: 100%; }
+
+  /* Page layout (products) → single col */
+  .page-layout { grid-template-columns: 1fr; }
+  .form-card { position: static; }
+
+  /* Products grid → 1 col */
+  .products-grid { grid-template-columns: 1fr; }
+
+  /* Form rows → single col */
+  .form-row { grid-template-columns: 1fr; }
+
+  /* Buttons smaller on mobile */
+  .btn { font-size: 12px; padding: 8px 12px; }
+  .btn-sm { font-size: 11px; padding: 5px 9px; }
+
+  /* Order/invoice detail two-col → single */
+  .detail-grid,
+  .info-grid { grid-template-columns: 1fr !important; }
+
+  /* Modals full-screen */
+  .modal-box,
+  .modal-content {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: auto;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+
+  /* Client detail sidebar stack */
+  .detail-layout { flex-direction: column !important; }
+  .detail-sidebar { width: 100% !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BREAKPOINT 769px – 1024px  (Tablet)
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  :root { --sidebar-w: 220px; }
+
+  .hamburger { display: none; }
+
+  .topbar { padding: 0 20px; }
+  .content { padding: 20px; }
+  .date-badge { display: none; }
+
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+  .page-layout { grid-template-columns: 1fr; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .table-wrap, .log-table-wrap { overflow-x: auto; }
+  table { min-width: 600px; }
+}
+
+/* ── Page-specific table wrappers: overflow on mobile ── */
+@media (max-width: 1024px) {
+  .clients-table-wrap,
+  .orders-table-wrap,
+  .invoice-table-wrap,
+  .hosting-table-wrap,
+  .wifi-table-wrap,
+  .pricing-table-wrap,
+  .teknisi-table-wrap,
+  .card { overflow-x: auto; }
+
+  /* Ensure tables inside cards scroll horizontally */
+  .card table,
+  .clients-table-wrap table,
+  .orders-table-wrap table,
+  .invoice-table-wrap table { min-width: 560px; }
+}

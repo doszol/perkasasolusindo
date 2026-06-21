@@ -694,6 +694,8 @@ textarea.form-ctrl { resize:vertical; min-height:80px; }
 <body>
 
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="logo-mark">
@@ -785,7 +787,8 @@ textarea.form-ctrl { resize:vertical; min-height:80px; }
 
   <!-- Topbar -->
   <div class="topbar">
-    <div class="page-title" style="font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+      
       <a href="/admin/admin_dashboard.php" style="color:var(--muted);text-decoration:none;">Dashboard</a>
       <span style="color:var(--muted);">/</span>
       <a href="/admin/orders.php" style="color:var(--muted);text-decoration:none;">Semua Order</a>
@@ -2365,5 +2368,29 @@ document.getElementById('rejectMonthlyModal').addEventListener('click', e => {
   if(e.target === document.getElementById('rejectMonthlyModal')) closeRejectMonthlyModal();
 });
 </script>
+
+<script>
+/* ── Mobile Sidebar Toggle ── */
+function toggleSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  if (hamburger) hamburger.classList.toggle('open');
+}
+function closeSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  if (sidebar)   sidebar.classList.remove('open');
+  if (overlay)   overlay.classList.remove('open');
+  if (hamburger) hamburger.classList.remove('open');
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeSidebar();
+});
+</script>
+
 </body>
 </html>

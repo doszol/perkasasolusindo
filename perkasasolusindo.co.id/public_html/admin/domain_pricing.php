@@ -169,6 +169,8 @@ $rnaConfigured = (RNA_RESELLER_ID !== 'ISI_RESELLER_ID_DISINI' && RNA_API_KEY !=
 </head>
 <body>
 
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="logo-mark">
@@ -226,6 +228,7 @@ $rnaConfigured = (RNA_RESELLER_ID !== 'ISI_RESELLER_ID_DISINI' && RNA_API_KEY !=
 <main class="main">
 
   <div class="topbar">
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
     <div class="breadcrumb">
       <a href="/admin/admin_dashboard.php">Dashboard</a>
       <i class="fa fa-chevron-right"></i>
@@ -400,5 +403,29 @@ function refreshModal(id, btn) {
   });
 }
 </script>
+
+<script>
+/* ── Mobile Sidebar Toggle ── */
+function toggleSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  if (hamburger) hamburger.classList.toggle('open');
+}
+function closeSidebar() {
+  var sidebar   = document.querySelector('.sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+  if (sidebar)   sidebar.classList.remove('open');
+  if (overlay)   overlay.classList.remove('open');
+  if (hamburger) hamburger.classList.remove('open');
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeSidebar();
+});
+</script>
+
 </body>
 </html>
