@@ -38,6 +38,18 @@ if ($order) {
     $hst->close();
     $domain_aktif = $hrow['domain'] ?? '';
 }
+
+// Ambil invoice dan deadline pembayaran
+$invoice  = null;
+$deadline = null;
+if ($order) {
+    $si = $conn->prepare("SELECT id, total, duedate FROM tblinvoices WHERE order_id=? AND userid=? LIMIT 1");
+    $si->bind_param('ii', $order['id'], $_SESSION['user_id']);
+    $si->execute();
+    $invoice = $si->get_result()->fetch_assoc();
+    $si->close();
+    $deadline = $order['payment_deadline'] ?? ($invoice['duedate'] ?? null);
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -201,6 +213,48 @@ if ($order) {
     .btn-outline:hover { border-color: var(--violet); color: var(--text); }
 
     .confetti { font-size: 22px; letter-spacing: 4px; margin-bottom: 8px; }
+
+    .rek-box {
+      background: rgba(249,115,22,0.07);
+      border: 1.5px solid rgba(249,115,22,0.25);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 22px;
+    }
+    .rek-box-title {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 14px;
+    }
+    .rek-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+    .rek-norek { font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: 2px; font-family: var(--font-display); }
+    .rek-an { font-size: 13px; color: var(--text2); margin-top: 2px; }
+    .rek-warning {
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #fca5a5;
+      line-height: 1.7;
+      margin-top: 10px;
+    }
+    .rek-copy-btn {
+      background: rgba(249,115,22,0.15);
+      border: 1px solid rgba(249,115,22,0.4);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
   </style>
 </head>
 <body>
@@ -229,9 +283,43 @@ if ($order) {
       <span class="info-val teal"><?php echo htmlspecialchars($domain_aktif); ?></span>
     </div>
     <?php endif; ?>
+    <?php if ($invoice): ?>
+    <div class="info-row">
+      <span class="info-label">Total Tagihan</span>
+      <span class="info-val accent" style="font-size:16px;font-weight:800;">
+        Rp <?php echo number_format((float)$invoice['total'], 0, ',', '.'); ?>
+      </span>
+    </div>
+    <?php endif; ?>
+    <?php if ($deadline): ?>
+    <div class="info-row">
+      <span class="info-label">Batas Bayar</span>
+      <span class="info-val" style="color:#f87171;font-weight:700;">
+        ⏰ <?php echo date('d M Y H:i', strtotime($deadline)); ?> WIB
+      </span>
+    </div>
+    <?php endif; ?>
     <div class="info-row">
       <span class="info-label">Status</span>
-      <span class="info-val" style="color:var(--magenta-light);">⏳ Menunggu Aktivasi</span>
+      <span class="info-val" style="color:var(--magenta-light);">⏳ Menunggu Pembayaran</span>
+    </div>
+  </div>
+
+  <!-- Info Rekening Pembayaran -->
+  <div class="rek-box">
+    <div class="rek-box-title">💳 Rekening Pembayaran</div>
+    <div class="rek-row">
+      <div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:2px;">Bank BCA</div>
+        <div class="rek-norek" id="norekBCA">0184246283</div>
+        <div class="rek-an">a.n. <strong style="color:var(--text);">TECH PERKASA SOLUSINDO</strong></div>
+      </div>
+      <button onclick="copyRek()" id="btnCopyRek" class="rek-copy-btn">📋 Salin</button>
+    </div>
+    <div class="rek-warning">
+      ⚠️ <strong>Penting:</strong> Lakukan pembayaran dan upload bukti transfer di
+      <strong>Dashboard → Layanan Hosting</strong> sebelum batas waktu.
+      Order yang melewati batas waktu akan <strong>dihapus otomatis</strong>.
     </div>
   </div>
   <?php endif; ?>
@@ -240,24 +328,34 @@ if ($order) {
     <div class="steps-next-title">Langkah Selanjutnya</div>
     <div class="next-step">
       <div class="next-num">1</div>
-      <div class="next-text">Admin kami memverifikasi order dan menyiapkan server hosting Anda.</div>
+      <div class="next-text">Transfer pembayaran ke rekening BCA <strong style="color:var(--text);">0184246283</strong> a.n. Tech Perkasa Solusindo.</div>
     </div>
     <div class="next-step">
       <div class="next-num">2</div>
-      <div class="next-text">Anda akan dihubungi via WhatsApp atau email dengan instruksi pembayaran.</div>
+      <div class="next-text">Upload bukti transfer di <strong style="color:var(--teal);">Dashboard → Layanan Hosting</strong>. Admin akan segera memverifikasi.</div>
     </div>
     <div class="next-step">
       <div class="next-num">3</div>
-      <div class="next-text">Setelah pembayaran terkonfirmasi, akses cPanel & credential dikirimkan ke email Anda.</div>
+      <div class="next-text">Setelah pembayaran dikonfirmasi, akun hosting & credential cPanel langsung dikirim ke email Anda.</div>
     </div>
   </div>
 
-  <a href="/client/client_dashboard.php" class="btn-primary">
-    <i class="fa fa-tachometer"></i> Lihat di Dashboard Saya
+  <a href="/client/client_dashboard.php?view=layanan_hosting" class="btn-primary">
+    <i class="fa fa-cloud"></i> Lihat & Upload Bukti Pembayaran
   </a>
-  <a href="https://wa.me/6281246684665?text=Halo,+saya+baru+order+hosting+<?php echo urlencode($order_number); ?>" target="_blank" class="btn-outline">
+  <a href="https://wa.me/6281246684665?text=Halo+Perkasa,+saya+baru+order+hosting+<?php echo urlencode($order_number); ?>" target="_blank" class="btn-outline">
     <i class="fa fa-whatsapp"></i> Chat Admin via WhatsApp
   </a>
 </div>
+
+<script>
+function copyRek() {
+  navigator.clipboard.writeText('0184246283').then(function() {
+    var btn = document.getElementById('btnCopyRek');
+    btn.textContent = '✅ Tersalin!';
+    setTimeout(function() { btn.textContent = '📋 Salin'; }, 2000);
+  });
+}
+</script>
 </body>
 </html>

@@ -34,3 +34,15 @@ define('DA_API_KEY', 'perkasa969699');
 define('DA_DOMAIN',  'perkasasolusindo.co.id');
 define('DA_PACKAGE', 'starterpaket');
 define('DA_IP',      '103.112.163.50');
+
+// =====================================================
+//  RNA / RDASH Domain Reseller API Config
+//  Dashboard: https://perkasasolusindo.rdash.id
+//  Generate API Key: Settings → API & Modules → + ADD
+//  Dokumentasi: https://docs.rdash.id/developer/api
+//  ⚠️ ISI reseller_id & API key di bawah setelah di-generate dari dashboard RDASH.
+//     Saat generate, pastikan IP server ini di-whitelist.
+// =====================================================
+define('RNA_API_BASE',     'https://api.rdash.id/v1');
+define('RNA_RESELLER_ID',  'ISI_RESELLER_ID_DISINI');
+define('RNA_API_KEY',      'ISI_API_KEY_DISINI');
