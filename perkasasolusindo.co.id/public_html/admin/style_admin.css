@@ -822,8 +822,9 @@ select.form-control option { background: var(--surface2); }
   flex-shrink: 0;
 }
 
+
 /* ══════════════════════════════════════════════════════════════
-   RESPONSIVE – Mobile & Tablet
+   RESPONSIVE – Mobile & Tablet  (ditulis ulang lengkap)
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Hamburger Button ── */
@@ -852,7 +853,7 @@ select.form-control option { background: var(--surface2); }
 .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* ── Sidebar Overlay (mobile backdrop) ── */
+/* ── Sidebar Overlay ── */
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -864,14 +865,40 @@ select.form-control option { background: var(--surface2); }
 .sidebar-overlay.open { display: block; }
 
 /* ══════════════════════════════════════════════════════════════
-   BREAKPOINT ≤ 768px  (Mobile)
+   TABLET  769px – 1024px
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root { --sidebar-w: 220px; }
+
+  .topbar { padding: 0 20px; }
+  .content { padding: 20px; }
+  .date-badge { display: none; }
+
+  /* Stats grid 2 col */
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Two-col → single */
+  .grid-2 { grid-template-columns: 1fr; }
+
+  /* Products layout */
+  .page-layout { grid-template-columns: 1fr; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Tables scrollable */
+  .clients-table-wrap,
+  .tek-table-wrap,
+  .orders-table-wrap,
+  #tableCard { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MOBILE  ≤ 768px
    ══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
 
-  /* Hamburger visible */
+  /* ── Sidebar ── */
   .hamburger { display: flex; }
 
-  /* Sidebar slides off-screen by default */
   .sidebar {
     transform: translateX(-100%);
     z-index: 100;
@@ -881,233 +908,305 @@ select.form-control option { background: var(--surface2); }
     box-shadow: 4px 0 24px rgba(0,0,0,.5);
   }
 
-  /* Main takes full width */
+  /* ── Main layout ── */
   .main { margin-left: 0; }
 
-  /* Topbar layout */
+  /* ── Topbar ── */
   .topbar {
-    padding: 0 16px;
-    height: 58px;
-    gap: 10px;
+    padding: 0 12px;
+    height: 54px;
+    gap: 8px;
+    flex-wrap: nowrap;
   }
-  .page-title { font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .page-title {
+    font-size: 13px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  /* Breadcrumb dalam topbar (order_detail, domain_pricing, dll) */
+  .topbar > a,
+  .topbar > span,
+  .topbar .breadcrumb {
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 1;
+  }
   .date-badge { display: none; }
+  /* Topbar-right tombol-tombol kecil */
+  .topbar-right { gap: 6px; flex-shrink: 0; }
+  .topbar-btn { width: 32px; height: 32px; font-size: 13px; }
 
-  /* Content padding */
-  .content { padding: 16px; }
+  /* ── Content ── */
+  .content { padding: 12px; }
 
-  /* Welcome banner */
-  .welcome-banner { padding: 20px 18px; margin-bottom: 18px; }
-  .welcome-banner h1 { font-size: 17px; }
+  /* ── Welcome Banner ── */
+  .welcome-banner { padding: 16px; margin-bottom: 14px; }
+  .welcome-banner h1 { font-size: 15px; }
   .welcome-banner p { font-size: 12px; }
 
-  /* Quick actions wrap & shrink */
-  .quick-actions { gap: 8px; }
-  .quick-actions .btn { padding: 8px 12px; font-size: 12px; }
+  /* ── Quick Actions ── */
+  .quick-actions { gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .quick-actions .btn { padding: 8px 10px; font-size: 11px; }
 
-  /* Stat grid single column */
+  /* ── Stat Cards ── */
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
+  .stat-card { padding: 14px; }
   .stat-value { font-size: 22px; }
+  .revenue-value { font-size: 16px !important; }
 
-  /* Two-column → single */
-  .grid-2 { grid-template-columns: 1fr; gap: 14px; }
+  /* ── Grid 2 col → 1 col ── */
+  .grid-2 { grid-template-columns: 1fr; gap: 12px; }
 
-  /* Tables: horizontal scroll */
-  .card { overflow: visible; }
-  .table-wrap, .log-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { min-width: 540px; }
-  th, td { padding: 9px 12px; font-size: 12px; }
+  /* ── Buttons ── */
+  .btn { font-size: 12px; padding: 8px 10px; gap: 5px; }
+  .btn-sm { font-size: 11px; padding: 5px 8px; }
+  .btn-full { width: 100%; justify-content: center; }
 
-  /* Filter bar */
-  .filter-bar { flex-wrap: wrap; gap: 8px; }
+  /* ── Alert Banner ── */
+  .alert-banner { font-size: 12px; padding: 10px 12px; gap: 10px; }
+
+  /* ── Cards ── */
+  .card-header { padding: 12px 14px; }
+  .card-title { font-size: 13px; }
+
+  /* ══════════════════════════
+     HALAMAN PRODUCTS
+  ══════════════════════════ */
+  .filter-bar { flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
   .search-wrap { margin-left: 0; width: 100%; }
-  .search-input { width: 100%; }
+  .search-input { width: 100%; box-sizing: border-box; }
 
-  /* Page layout (products) → single col */
-  .page-layout { grid-template-columns: 1fr; }
+  /* Layout products: form di bawah list */
+  .page-layout { grid-template-columns: 1fr; gap: 16px; }
   .form-card { position: static; }
+  .products-grid { grid-template-columns: 1fr; gap: 12px; }
+  .product-card { padding: 14px; }
+  .product-actions { flex-wrap: wrap; gap: 6px; }
+  .form-row { grid-template-columns: 1fr; gap: 10px; }
 
-  /* Products grid → 1 col */
-  .products-grid { grid-template-columns: 1fr; }
-
-  /* Form rows → single col */
-  .form-row { grid-template-columns: 1fr; }
-
-  /* Buttons smaller on mobile */
-  .btn { font-size: 12px; padding: 8px 12px; }
-  .btn-sm { font-size: 11px; padding: 5px 9px; }
-
-  /* Order/invoice detail two-col → single */
-  .detail-grid,
-  .info-grid { grid-template-columns: 1fr !important; }
-
-  /* Modals full-screen */
-  .modal-box,
-  .modal-content {
-    width: 95vw !important;
-    max-width: 95vw !important;
-    margin: auto;
-    max-height: 88vh;
-    overflow-y: auto;
+  /* ══════════════════════════
+     SEMUA TABEL
+  ══════════════════════════ */
+  /* Wrapper umum */
+  .clients-table-wrap,
+  .tek-table-wrap,
+  #tableCard {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
   }
 
-  /* Client detail sidebar stack */
-  .detail-layout { flex-direction: column !important; }
-  .detail-sidebar { width: 100% !important; }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   BREAKPOINT 769px – 1024px  (Tablet)
-   ══════════════════════════════════════════════════════════════ */
-@media (min-width: 769px) and (max-width: 1024px) {
-
-  :root { --sidebar-w: 220px; }
-
-  .hamburger { display: none; }
-
-  .topbar { padding: 0 20px; }
-  .content { padding: 20px; }
-  .date-badge { display: none; }
-
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .grid-2 { grid-template-columns: 1fr; }
-  .page-layout { grid-template-columns: 1fr; }
-  .products-grid { grid-template-columns: repeat(2, 1fr); }
-
-  .table-wrap, .log-table-wrap { overflow-x: auto; }
-  table { min-width: 600px; }
-}
-
-/* ── Page-specific table wrappers: overflow on mobile ── */
-@media (max-width: 1024px) {
-  .clients-table-wrap,
-  .orders-table-wrap,
-  .invoice-table-wrap,
-  .hosting-table-wrap,
-  .wifi-table-wrap,
-  .pricing-table-wrap,
-  .teknisi-table-wrap,
-  .card { overflow-x: auto; }
-
-  /* Ensure tables inside cards scroll horizontally */
-  .card table,
+  /* Tabel umum: scroll horizontal, teks kecil */
   .clients-table-wrap table,
-  .orders-table-wrap table,
-  .invoice-table-wrap table { min-width: 560px; }
-}
+  .tek-table-wrap table {
+    min-width: 520px;
+  }
+  .clients-table-wrap th,
+  .clients-table-wrap td,
+  .tek-table-wrap th,
+  .tek-table-wrap td {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
 
-/* ══════════════════════════════════════════════════════════════
-   MOBILE TABLE FIX – orders_wifi.php & orders_hosting.php
-   Sembunyikan kolom sekunder, buat tabel muat di layar mobile
-   ══════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-
-  /* Wrapper tabel: paksa scroll horizontal jika masih perlu */
-  .wifi-table-wrap,
-  .hosting-table-wrap,
-  div[style*="overflow-x:auto"] {
-    overflow-x: auto !important;
+  /* ── orders.php / invoices.php tabel ── */
+  .orders-table-wrap,
+  .invoice-table-wrap {
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* ── WiFi Table ── */
-  /* Sembunyikan: #, No.Order sub-ID, Teknisi, Jadwal, Tgl Order */
-  .wifi-table th:nth-child(1),
-  .wifi-table td:nth-child(1),
-  .wifi-table th:nth-child(8),
-  .wifi-table td:nth-child(8),
-  .wifi-table th:nth-child(9),
-  .wifi-table td:nth-child(9),
-  .wifi-table th:nth-child(10),
-  .wifi-table td:nth-child(10) {
-    display: none;
-  }
+  /* ══════════════════════════
+     HALAMAN ORDERS_WIFI
+  ══════════════════════════ */
+  #tableCard { overflow-x: auto !important; }
 
-  /* Kolom Klien: izinkan wrap */
-  .wifi-table td:nth-child(3) {
-    min-width: 100px !important;
-    white-space: normal;
-  }
-  .wifi-table td:nth-child(3) > div:last-child { display: none; } /* sembunyikan email */
+  /* Sembunyikan kolom sekunder wifi: #, Teknisi, Jadwal, Tgl Order */
+  .wifi-table th:nth-child(1), .wifi-table td:nth-child(1),
+  .wifi-table th:nth-child(8), .wifi-table td:nth-child(8),
+  .wifi-table th:nth-child(9), .wifi-table td:nth-child(9),
+  .wifi-table th:nth-child(10),.wifi-table td:nth-child(10) { display: none; }
 
-  /* Kolom Paket */
-  .wifi-table td:nth-child(4) { min-width: 90px; }
+  .wifi-table { width: 100%; min-width: 0; }
+  .wifi-table th, .wifi-table td { padding: 9px 10px; font-size: 12px; white-space: normal; }
 
-  /* Harga: singkat */
-  .wifi-table td:nth-child(5) { white-space: nowrap; font-size: 11px; }
-
-  /* Status & Pembayaran compact */
-  .wifi-table td:nth-child(6),
-  .wifi-table td:nth-child(7) { white-space: normal; min-width: 80px; }
-
-  /* Aksi: lebih kecil */
-  .wifi-table td:nth-child(11) a,
-  .wifi-table td:last-child a { padding: 5px 8px !important; font-size: 11px !important; }
-
-  /* ── Hosting Table ── */
-  /* Kolom: # No.Order Klien Paket Domain Periode Harga Status Pembayaran Tgl Aksi */
-  /* Sembunyikan: #, Periode, Tgl Order */
-  .hosting-table th:nth-child(1),
-  .hosting-table td:nth-child(1),
-  .hosting-table th:nth-child(6),
-  .hosting-table td:nth-child(6),
-  .hosting-table th:nth-child(10),
-  .hosting-table td:nth-child(10) {
-    display: none;
-  }
-
-  /* Kolom Klien wrap & sembunyikan email */
-  .hosting-table td:nth-child(3) {
-    min-width: 100px !important;
-    white-space: normal;
-  }
-  .hosting-table td:nth-child(3) > div:last-child { display: none; }
-
-  /* Domain: wrap */
-  .hosting-table td:nth-child(5) {
-    white-space: normal;
-    word-break: break-all;
-    font-size: 11px;
-    max-width: 100px;
-  }
+  /* Klien: izinkan wrap, sembunyikan email */
+  .wifi-table td:nth-child(3) { min-width: 110px; }
+  .wifi-table td:nth-child(3) > div:nth-child(3) { display: none; }
 
   /* Harga */
-  .hosting-table td:nth-child(7) { white-space: nowrap; font-size: 11px; }
+  .wifi-table td:nth-child(5) { white-space: nowrap; }
+
+  /* Status & Pembayaran */
+  .wifi-table td:nth-child(6),
+  .wifi-table td:nth-child(7) { min-width: 80px; }
+
+  /* Aksi */
+  .wifi-table td:last-child a { padding: 5px 8px !important; font-size: 11px !important; }
+
+  /* ══════════════════════════
+     HALAMAN ORDERS_HOSTING
+  ══════════════════════════ */
+  /* Sembunyikan: #, Periode, Tgl Order */
+  .hosting-table th:nth-child(1), .hosting-table td:nth-child(1),
+  .hosting-table th:nth-child(6), .hosting-table td:nth-child(6),
+  .hosting-table th:nth-child(10),.hosting-table td:nth-child(10) { display: none; }
+
+  .hosting-table { width: 100%; min-width: 0; }
+  .hosting-table th, .hosting-table td { padding: 9px 10px; font-size: 12px; white-space: normal; }
+
+  /* Klien: sembunyikan email */
+  .hosting-table td:nth-child(3) { min-width: 110px; }
+  .hosting-table td:nth-child(3) > div:nth-child(3) { display: none; }
+
+  /* Domain: wrap */
+  .hosting-table td:nth-child(5) { word-break: break-all; font-size: 11px; max-width: 100px; }
+
+  /* Harga */
+  .hosting-table td:nth-child(7) { white-space: nowrap; }
 
   /* Aksi */
   .hosting-table td:last-child a { padding: 5px 8px !important; font-size: 11px !important; }
 
-  /* General: padding lebih tipis untuk tabel ini */
-  .wifi-table th,
-  .wifi-table td,
-  .hosting-table th,
-  .hosting-table td {
-    padding: 8px 10px;
-    font-size: 12px;
+  /* ══════════════════════════
+     HALAMAN INVOICES
+  ══════════════════════════ */
+  /* Status summary: 2 col */
+  .status-summary { grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
+
+  /* Filter bar invoices */
+  .filter-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+  .filter-bar input[type=text],
+  .filter-bar input[type=date],
+  .filter-bar select { width: 100%; min-width: 0 !important; box-sizing: border-box; }
+  .filter-bar .filter-sep { display: none; }
+
+  /* Invoice table scroll */
+  .invoice-wrap,
+  .card:has(.orders-table),
+  .card:has(table) { overflow-x: auto; }
+
+  /* ══════════════════════════
+     HALAMAN ORDER_DETAIL
+  ══════════════════════════ */
+  /* od-grid: 2 col → 1 col */
+  .od-grid { grid-template-columns: 1fr !important; gap: 14px; }
+
+  /* Order hero header */
+  .order-hero > div { flex-direction: column !important; gap: 12px !important; }
+  .order-hero > div > div:last-child { text-align: left !important; }
+
+  /* Step bar: scroll horizontal */
+  .steps { overflow-x: auto; gap: 0; padding-bottom: 4px; }
+  .step-item { min-width: 72px; font-size: 9px; }
+  .step-dot { width: 24px; height: 24px; font-size: 10px; }
+
+  /* Update form */
+  .update-form .form-row { grid-template-columns: 1fr !important; }
+  .action-row { flex-wrap: wrap; }
+  .action-row .btn { flex: 1; min-width: 120px; justify-content: center; }
+
+  /* Info grid auto-fill */
+  div[style*="grid-template-columns:repeat(auto-fill,minmax(190px"] {
+    grid-template-columns: 1fr 1fr !important;
   }
+
+  /* ══════════════════════════
+     HALAMAN CLIENT_DETAIL
+  ══════════════════════════ */
+  .detail-grid { grid-template-columns: 1fr !important; gap: 14px; }
+
+  /* Tabs: scroll horizontal */
+  .tabs-nav { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: 0; }
+  .tab-btn { white-space: nowrap; padding: 10px 14px; font-size: 12px; }
+
+  /* Table dalam tab */
+  .table-plain { min-width: 480px; }
+  .info-card { margin-bottom: 14px; }
+
+  /* ══════════════════════════
+     HALAMAN TEKNISI_DETAIL
+  ══════════════════════════ */
+  /* Header detail */
+  .detail-header { padding: 16px; gap: 14px; }
+  .big-avatar { width: 56px; height: 56px; font-size: 22px; }
+  .detail-header-info h2 { font-size: 17px; }
+  .detail-header-meta { font-size: 12px; gap: 8px; }
+  .detail-header-actions { width: 100%; }
+  .detail-header-actions .btn { flex: 1; justify-content: center; }
+
+  /* Tab nav: scroll */
+  .tab-nav { overflow-x: auto; flex-wrap: nowrap; }
+  .tab-btn { white-space: nowrap; font-size: 12px; padding: 10px 14px; }
+
+  /* Info grid & form grid */
+  .info-grid { grid-template-columns: 1fr !important; }
+  .form-grid { grid-template-columns: 1fr !important; }
+  .form-group.full { grid-column: 1 !important; }
+
+  /* Stat row */
+  .stat-row { flex-wrap: wrap; gap: 10px; }
+  .mini-stat { flex: 1; min-width: 100px; }
+
+  /* ══════════════════════════
+     HALAMAN DOMAIN_PRICING
+  ══════════════════════════ */
+  /* Add TLD form */
+  .add-tld-form { flex-direction: column; gap: 8px; }
+  .add-tld-form input { width: 100% !important; box-sizing: border-box; }
+
+  /* Pricing table scroll */
+  .pricing-table { min-width: 600px; }
+  .pricing-table input[type=text] { width: 100px; }
+
+  /* ══════════════════════════
+     HALAMAN ADMIN_DASHBOARD
+  ══════════════════════════ */
+  /* Detail grid dalam order card */
+  .detail-grid-dash {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Update form dalam order card */
+  .update-form .form-row { grid-template-columns: 1fr; }
+
+  /* ══════════════════════════
+     MODAL
+  ══════════════════════════ */
+  /* Semua modal: full lebar */
+  div[style*="max-width:400px"],
+  div[style*="max-width: 400px"],
+  div[style*="max-width:480px"],
+  div[style*="max-width: 480px"],
+  div[style*="max-width:520px"],
+  div[style*="max-width:600px"] {
+    width: 94vw !important;
+    max-width: 94vw !important;
+    margin: auto;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+  .modal-overlay { padding: 16px; }
+  .modal-box { width: 94vw !important; max-width: 94vw !important; }
+
 }
 
-/* Override inline overflow:hidden on card wrappers containing tables */
-@media (max-width: 768px) {
-  .wifi-table,
-  .hosting-table {
-    /* Force table to be no wider than needed with hidden columns */
-    width: 100%;
-    min-width: 0;
-  }
-  /* Card containing wifi/hosting table: allow overflow scroll */
-  .wifi-table ~ *,
-  .card:has(.wifi-table),
-  .card:has(.hosting-table) {
-    overflow: visible !important;
-  }
-}
-
-@media (max-width: 768px) {
-  #tableCard { overflow: visible !important; }
-  #tableCard > div[style*="overflow-x"] { overflow-x: auto !important; }
+/* ══════════════════════════════════════════════════════════════
+   SMALL MOBILE  ≤ 400px
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 400px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .quick-actions .btn { width: 100%; justify-content: center; }
+  .status-summary { grid-template-columns: 1fr !important; }
+  .topbar-right .date-badge { display: none; }
 }
