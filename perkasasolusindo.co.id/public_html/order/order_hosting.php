@@ -2068,14 +2068,23 @@ function switchDomainType(form, type) {
 }
 
 /* ── TLD pricing table (harga & konfigurasi lokal) ── */
+/* ── TLD pricing table (fallback lokal — sumber utama tetap dari check_domain.php) ──
+   Harga di sini HARUS disinkronkan manual jika admin mengubah harga di
+   /admin/domain_pricing.php, karena ini hanya dipakai sebagai fallback saat
+   request ke check_domain.php gagal mengembalikan field price. */
 const TLD_LIST = [
-  { tld: '.id',     price: 245000, sale: false },
+  { tld: '.id',     price: 345900, sale: false },
+  { tld: '.co.id',  price: 398990, sale: false },
+  { tld: '.web.id', price: 68390,  sale: false },
+  { tld: '.or.id',  price: 68390,  sale: false },
+  { tld: '.ac.id',  price: 68390,  sale: false },
+  { tld: '.sch.id', price: 68390,  sale: false },
+  { tld: '.biz.id', price: 65190,  sale: false },
+  { tld: '.my.id',  price: 27990,  sale: false },
   { tld: '.com',    price: 210000, sale: false },
-  { tld: '.net',    price: 240000, sale: false },
-  { tld: '.xyz',    price: 50000,  sale: true  },
-  { tld: '.co.id',  price: 350000, sale: false },
-  { tld: '.my.id',  price: 25000,  sale: true  },
-  { tld: '.web.id', price: 35000,  sale: false },
+  { tld: '.net',    price: 232900, sale: false },
+  { tld: '.org',    price: 203590, sale: false },
+  { tld: '.xyz',    price: 37090,  sale: false },
 ];
 
 // Cache hasil cek agar tidak double-request

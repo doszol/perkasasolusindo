@@ -22,16 +22,19 @@ $domain_type   = trim($_POST['domain_type']   ?? 'subdomain');
 $domain_raw    = trim($_POST['domain']        ?? '');
 $domain_custom = trim($_POST['domain_custom'] ?? '');
 $domain_tld    = trim($_POST['domain_tld']    ?? '');
-$domain_price  = (int)($_POST['domain_price'] ?? 0);
 $periode       = (int)($_POST['periode_bulan'] ?? 1);
 $catatan       = trim($_POST['catatan'] ?? '');
 $tos           = !empty($_POST['tos']);
 
-$allowed_tlds = ['.id', '.com', '.net', '.xyz', '.co.id', '.my.id', '.web.id'];
-
 // ── Validasi dasar ──
 if (!$tos)          redirectBack('Harap setujui Ketentuan Layanan.', $paket_id);
 if ($paket_id <= 0) redirectBack('Paket tidak valid.', $paket_id);
+
+// $domain_price TIDAK PERNAH dipercaya dari input client ($_POST) — itu rawan
+// dimanipulasi via DevTools/curl (client bisa kirim harga berapa saja).
+// Untuk domain_type='beli', harga SELALU dihitung ulang di server berdasarkan
+// tbldomain_pricing (sumber kebenaran tunggal, sama dengan check_domain.php).
+$domain_price = 0;
 
 if ($domain_type === 'subdomain') {
     if (!preg_match('/^[a-zA-Z0-9\-]{3,80}$/', $domain_raw))
@@ -39,10 +42,17 @@ if ($domain_type === 'subdomain') {
 } elseif ($domain_type === 'beli') {
     if (empty($domain_custom))
         redirectBack('Silakan pilih domain yang ingin didaftarkan.', $paket_id);
-    if (empty($domain_tld) || !in_array($domain_tld, $allowed_tlds, true))
-        redirectBack('Ekstensi domain tidak valid.', $paket_id);
-    if ($domain_price < 0 || $domain_price > 10000000)
-        redirectBack('Harga domain tidak valid.', $paket_id);
+
+    $stTld = $conn->prepare("SELECT harga_jual FROM tbldomain_pricing WHERE tld = ? AND aktif = 1 LIMIT 1");
+    $stTld->bind_param('s', $domain_tld);
+    $stTld->execute();
+    $tldRow = $stTld->get_result()->fetch_assoc();
+    $stTld->close();
+
+    if (!$tldRow) {
+        redirectBack('Ekstensi domain tidak valid atau sedang tidak tersedia.', $paket_id);
+    }
+    $domain_price = (float)$tldRow['harga_jual'];
 } else {
     redirectBack('Tipe domain tidak dikenali.', $paket_id);
 }
