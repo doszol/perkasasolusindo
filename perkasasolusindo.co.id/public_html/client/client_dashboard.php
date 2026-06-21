@@ -1262,8 +1262,6 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
                 $hasUnpaidInvoice = true; break;
             }
         }
-        // URL DirectAdmin (sesuaikan dengan server DirectAdmin Anda)
-        $daUrl = 'https://perkasasolusindo.co.id:2222';
         $siteUrl = 'http://' . $h['domain'];
       ?>
 
@@ -1479,7 +1477,8 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
 
           <!-- Tombol Aksi -->
           <div style="display:flex;flex-wrap:wrap;gap:12px;padding-top:4px;">
-            <a href="<?= htmlspecialchars($daUrl) ?>" target="_blank" rel="noopener noreferrer"
+            <?php if (($h['domainstatus'] ?? '') === 'Active' && !empty($h['da_username'])): ?>
+            <a href="/client/da_autologin.php?id=<?= (int)$h['id'] ?>" target="_blank" rel="noopener noreferrer"
                style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;
                       background:linear-gradient(135deg,var(--pink),var(--bg-accent));
                       color:#fff;font-size:.86rem;font-weight:700;border-radius:10px;
@@ -1487,6 +1486,15 @@ unset($_SESSION['upload_bukti_hosting_error'], $_SESSION['upload_bukti_hosting_e
                onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
               <i class="fa-solid fa-gear"></i> Masuk DirectAdmin
             </a>
+            <?php else: ?>
+            <span title="Hosting belum aktif"
+               style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;
+                      background:rgba(255,255,255,.05);
+                      color:var(--text-muted);font-size:.86rem;font-weight:700;border-radius:10px;
+                      border:1px solid var(--card-border);cursor:not-allowed;">
+              <i class="fa-solid fa-gear"></i> Masuk DirectAdmin
+            </span>
+            <?php endif; ?>
             <a href="<?= htmlspecialchars($siteUrl) ?>" target="_blank" rel="noopener noreferrer"
                style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;
                       background:rgba(255,255,255,.08);

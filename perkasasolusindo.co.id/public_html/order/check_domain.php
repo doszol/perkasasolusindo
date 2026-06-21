@@ -96,31 +96,31 @@ $rdap_base   = $rdap_endpoints[$tld_raw];
 $full_domain = $domain_raw . $tld_raw;  // e.g. "tokosaya.com"
 $rdap_url    = $rdap_base . urlencode($full_domain);
 
-// ── Panggil RDAP ──
-$ctx = stream_context_create([
-    'http' => [
-        'method'          => 'GET',
-        'timeout'         => 8,        // max 8 detik per TLD
-        'ignore_errors'   => true,     // ambil body meski non-200
-        'user_agent'      => 'Perkasa-Domain-Checker/1.0',
-        'header'          => "Accept: application/rdap+json\r\n",
-    ],
-    'ssl'  => [
-        'verify_peer'     => true,
-        'verify_peer_name'=> true,
-    ],
+// ── Panggil RDAP via cURL ──
+// (cURL dipakai konsisten dengan directadmin_api.php & rna_api.php — lebih
+// reliable untuk mendapatkan HTTP status code dibanding file_get_contents,
+// yang di beberapa konfigurasi shared hosting bisa kurang konsisten.)
+$ch = curl_init();
+curl_setopt_array($ch, [
+    CURLOPT_URL            => $rdap_url,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_TIMEOUT        => 8,
+    CURLOPT_CONNECTTIMEOUT => 5,
+    CURLOPT_SSL_VERIFYPEER => true,
+    CURLOPT_SSL_VERIFYHOST => 2,
+    CURLOPT_HTTPHEADER     => ['Accept: application/rdap+json'],
+    CURLOPT_USERAGENT      => 'Perkasa-Domain-Checker/1.0',
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_MAXREDIRS      => 3,
 ]);
 
-$body        = @file_get_contents($rdap_url, false, $ctx);
-$http_status = 0;
+$body        = curl_exec($ch);
+$http_status = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$curl_err    = curl_error($ch);
+curl_close($ch);
 
-// Ambil HTTP status dari header respons
-if (isset($http_response_header)) {
-    foreach ($http_response_header as $h) {
-        if (preg_match('#HTTP/\d+\.?\d*\s+(\d+)#', $h, $m)) {
-            $http_status = (int)$m[1];
-        }
-    }
+if ($curl_err) {
+    error_log("[check_domain] cURL error: $curl_err | url=$rdap_url");
 }
 
 // ── Interpretasi hasil RDAP ──
@@ -157,6 +157,9 @@ $response = [
 if ($uncertain) {
     $response['available'] = null; // null = tidak pasti
     $response['notice']    = 'Tidak dapat memeriksa ketersediaan saat ini. Coba lagi nanti.';
+    // Detail status disertakan untuk memudahkan debugging (aman ditampilkan,
+    // tidak mengandung data sensitif — hanya kode HTTP/cURL).
+    $response['debug'] = $curl_err ? "cURL: $curl_err" : "HTTP status: $http_status";
 }
 
 echo json_encode($response);

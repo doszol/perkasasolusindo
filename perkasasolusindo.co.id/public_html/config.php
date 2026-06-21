@@ -44,5 +44,5 @@ define('DA_IP',      '103.112.163.50');
 //     Saat generate, pastikan IP server ini di-whitelist.
 // =====================================================
 define('RNA_API_BASE',     'https://api.rdash.id/v1');
-define('RNA_RESELLER_ID',  'ISI_RESELLER_ID_DISINI');
-define('RNA_API_KEY',      'ISI_API_KEY_DISINI');
+define('RNA_RESELLER_ID',  '1552');
+define('RNA_API_KEY',      '2wrCtathO0tCle2re7Az1rv8tpKt3IXA');

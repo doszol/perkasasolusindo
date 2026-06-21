@@ -35,6 +35,12 @@ $da_username = $row['da_username'];
 $da_password = $row['da_password'];
 $action_url  = 'https://' . DA_HOST . ':' . DA_PORT . '/CMD_LOGIN';
 
+// URL fallback jika login gagal (mis. password di DB tidak sinkron dengan
+// password asli di DA — bisa terjadi kalau client pernah ganti password
+// langsung lewat panel) atau saat logout dari DA.
+$fail_url   = SITE_URL . '/client/client_dashboard.php?view=layanan_hosting&da_login=gagal';
+$logout_url = SITE_URL . '/client/client_dashboard.php?view=layanan_hosting';
+
 ?><!DOCTYPE html>
 <html>
 <head>
@@ -57,6 +63,9 @@ $action_url  = 'https://' . DA_HOST . ':' . DA_PORT . '/CMD_LOGIN';
     <p>Mengalihkan ke DirectAdmin...</p>
   </div>
   <form id="daForm" method="POST" action="<?= htmlspecialchars($action_url) ?>">
+    <input type="hidden" name="referer" value="/">
+    <input type="hidden" name="FAIL_URL" value="<?= htmlspecialchars($fail_url) ?>">
+    <input type="hidden" name="LOGOUT_URL" value="<?= htmlspecialchars($logout_url) ?>">
     <input type="hidden" name="username" value="<?= htmlspecialchars($da_username) ?>">
     <input type="hidden" name="password" value="<?= htmlspecialchars($da_password) ?>">
   </form>
